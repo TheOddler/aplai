@@ -29,8 +29,11 @@ write_solution(Solution) :-
 	write("Solution = ["), nl,
 	( foreach(rect(Id, Top, Left, Bottom, Right), Solution)
 	do
-		Rect = rect(Id, Top, Left, Bottom, Right),
-		write("\t"), write(Rect), write(",") , nl
+		C = c(Left, Top),
+		W is Right - Left + 1,
+		H is Bottom - Top + 1,
+		S = s(W,H),
+		write("\t"), write(rect(Id,C,S)), write(",") , nl
 	),
 	write("]"), nl, nl.
 

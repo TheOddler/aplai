@@ -14,5 +14,6 @@ Amazing solution for the Advanced Programming Languages for Artificial Intellige
 * Code samples: http://www.eclipseclp.org/examples/
 * E-learning: http://4c.ucc.ie/~hsimonis/ELearning/index.htm
 * Other people with old assignment: https://github.com/toonn/aplai
+* CHR info: https://sicstus.sics.se/sicstus/docs/3.7.1/html/sicstus_34.html
 
 (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

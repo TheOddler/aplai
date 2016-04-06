@@ -13,7 +13,7 @@ solve(Name) :-
 	%Board is a list, we need it as array
 	( foreach(Row,Board), foreach(RowArray,Out)
 	do
-	  array_list(RowArray,Row)
+		array_list(RowArray,Row)
 	),
 	array_list(BoardArray,Out),
 
@@ -30,7 +30,7 @@ solve(Name) :-
 	% write final result
 	( foreach(Row, Board)
 	do
-	  write(Row), nl
+		write(Row), nl
 	), nl.
 
 solve(BoardArray, Select, Choice, Method, Option) :-

@@ -42,7 +42,7 @@ solve(BoardArray, Select, Choice, Method, Option) :-
 
 	% set constraints
 	row_col_constraint(BoardArray),
-	square_constraint(BoardArray), %assumes D is a power of something
+	block_constraint(BoardArray), %assumes D is a power of something
 
 	% do the search
 	search(BoardArray, 0, Select, Choice, Method, Option).
@@ -57,7 +57,7 @@ row_col_constraint(BoardArray) :-
 		alldifferent(Col)
 	).
 
-square_constraint(BoardArray) :-
+block_constraint(BoardArray) :-
 	dim(BoardArray, [D,D]),
 	DD is integer(sqrt(D)),
 	( multifor([I,J],[1,1],[DD,DD]), param(BoardArray,DD)

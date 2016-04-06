@@ -80,16 +80,16 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 	dim(Coordinates, [N,N]),
 	Coordinates :: 1..N,
 
-	% ROW/COL Constrain the coordinates
-	( for(I, 1, N), param(Coordinates, N)
-	do
-		% Each number (so each row in Coordinates) must have different rows
-		alldifferent(Coordinates[I,1..N]),
-		% Make sure no two numbers are on the same row and column
-		alldifferent(Coordinates[1..N,I])
-	),
+	% set constraints and link board
+	row_col_constraint(Coordinates, N),
+    link(BoardArray, Coordinates, N),
+	block_constraint(Coordinates, N),
 
-    % Link the numbers from the board with coordinates
+	% do the search
+	search(Coordinates, 0, Select, Choice, Method, Option).
+
+link(BoardArray, Coordinates, N) :-
+	% Link the numbers from the board with coordinates
 	( multifor([I,R,C], [1,1,1], [N,N,N]),
 		param(BoardArray, Coordinates)
 	do
@@ -100,8 +100,18 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 		% The numbers in BoardArray represent the actual number, so I
 		% While the numbers in Coordinates represent the possible rows, so R
 		% Columns are both just the colums, so C
-	),
+	).
 
+row_col_constraint(Coordinates, N) :-
+	( for(I, 1, N), param(Coordinates, N)
+	do
+		% Each number (so each row in Coordinates) must have different rows
+		alldifferent(Coordinates[I,1..N]),
+		% Make sure no two numbers are on the same row and column
+		alldifferent(Coordinates[1..N,I])
+	).
+
+block_constraint(Coordinates, N) :-
     NN is integer(sqrt(N)),
     ( multifor([Number, X], [1,1], [N, NN]), param(Coordinates, NN)
     do
@@ -128,7 +138,4 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
             (BlockNo * NN - B) #> -1,
             (BlockNo * NN - B) #< NN
         )
-    ),
-
-	% do the search
-	search(Coordinates, 0, Select, Choice, Method, Option).
+    ).

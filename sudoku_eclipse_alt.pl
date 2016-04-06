@@ -32,6 +32,47 @@ solve_all.
 solve(Name) :-
 	puzzles(Board,Name),       % get the puzzle
 
+	write("Solving: "), write(Name),
+
+    % Selection methods:
+    % input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret
+	% Choice methods:
+	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max, indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
+	time(solve(Board, OutCoordinates, most_constrained,indomain,complete,[backtrack(B)])),
+
+	write("Required "), write(B), write(" backtracks"), nl,
+
+	% write final result
+	write("Alternate Solution: "), nl,
+	write_model(OutCoordinates), nl,
+	write("Or properly readable: "), nl,
+	write_board(Board).
+
+solve(Board, Coordinates, Select, Choice, Method, Option) :-
+	model(Board, Coordinates),
+	% do the search
+	search(Coordinates, 0, Select, Choice, Method, Option).
+
+write_model(Coordinates) :-
+	dim(Coordinates, [N,N]),
+	( for(Number, 1, N), param(N, Coordinates)
+	do
+		write("Number "), write(Number), write(": "),
+		( for(Col, 1, N), param(Number, Coordinates)
+		do
+			Row is Coordinates[Number, Col],
+			write("("), write(Col), write(","), write(Row), write(")"), write("  ")
+		),
+		nl
+	).
+
+write_board(Board) :-
+	( foreach(Row, Board)
+	do
+	    write(Row), nl
+	), nl.
+
+model(Board, Coordinates) :-
 	%Board is a list, but array is more useful
 	( foreach(Row,Board), foreach(RowArray,Out)
 	do
@@ -39,37 +80,6 @@ solve(Name) :-
 	),
 	array_list(BoardArray,Out),
 
-	write("Solving: "), write(Name),
-
-    % Selection methods:
-    % input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret
-	% Choice methods:
-	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max, indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
-	time(solve(BoardArray, OutCoordinates, most_constrained,indomain,complete,[backtrack(B)])),
-
-	write("Required "), write(B), write(" backtracks"), nl,
-
-	% write final result
-	write("Alternate Solution: "), nl,
-	dim(OutCoordinates, [N,N]),
-	( for(Number, 1, N), param(N, OutCoordinates)
-	do
-		write("Number "), write(Number), write(": "),
-		( for(Col, 1, N), param(Number, OutCoordinates)
-		do
-			Row is OutCoordinates[Number, Col],
-			write("("), write(Col), write(","), write(Row), write(")"), write("  ")
-		),
-		nl
-	), nl,
-
-	write("Or properly readable: "), nl,
-	( foreach(Row, Board)
-	do
-	    write(Row), nl
-	), nl.
-
-solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 	% Find dimention of board
 	dim(BoardArray, [N,N]),
 
@@ -83,10 +93,7 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 	% set constraints and link board
 	row_col_constraint(Coordinates, N),
     link(BoardArray, Coordinates, N),
-	block_constraint(Coordinates, N),
-
-	% do the search
-	search(Coordinates, 0, Select, Choice, Method, Option).
+	block_constraint(Coordinates, N).
 
 link(BoardArray, Coordinates, N) :-
 	% Link the numbers from the board with coordinates

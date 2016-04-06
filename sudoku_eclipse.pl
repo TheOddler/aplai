@@ -10,12 +10,6 @@ solve_all.
 
 solve(Name) :-
 	puzzles(Board,Name), % get the puzzle
-	%Board is a list, we need it as array
-	( foreach(Row,Board), foreach(RowArray,Out)
-	do
-		array_list(RowArray,Row)
-	),
-	array_list(BoardArray,Out),
 
 	write("Solving: "), write(Name),
 
@@ -23,17 +17,32 @@ solve(Name) :-
     % input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret
 	% Choice methods:
 	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max, indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
-	time(solve(BoardArray, most_constrained,indomain,complete,[backtrack(B)])),
+	time(solve(Board, most_constrained,indomain,complete,[backtrack(B)])),
 
 	write("Required "), write(B), write(" backtracks"), nl,
 
 	% write final result
+	write_board(Board).
+
+solve(Board, Select, Choice, Method, Option) :-
+	model(Board, BoardArray),
+	% do the search
+	search(BoardArray, 0, Select, Choice, Method, Option).
+
+write_board(Board) :-
 	( foreach(Row, Board)
 	do
-		write(Row), nl
+	    write(Row), nl
 	), nl.
 
-solve(BoardArray, Select, Choice, Method, Option) :-
+model(Board, BoardArray) :-
+	%Board is a list, we need it as array
+	( foreach(Row,Board), foreach(RowArray,Out)
+	do
+		array_list(RowArray,Row)
+	),
+	array_list(BoardArray,Out),
+
 	% get dim, also makes sure it's square
 	dim(BoardArray, [D,D]),
 
@@ -42,10 +51,7 @@ solve(BoardArray, Select, Choice, Method, Option) :-
 
 	% set constraints
 	row_col_constraint(BoardArray),
-	block_constraint(BoardArray), %assumes D is a power of something
-
-	% do the search
-	search(BoardArray, 0, Select, Choice, Method, Option).
+	block_constraint(BoardArray). %assumes D is a power of something
 
 row_col_constraint(BoardArray) :-
 	dim(BoardArray, [D,D]),

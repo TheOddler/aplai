@@ -32,7 +32,7 @@ solve_all.
 solve(Name) :-
 	puzzles(Board,Name),       % get the puzzle
 
-	write("Solving: "), write(Name),
+	write("Solving with alternate: "), write(Name),
 
     % Selection methods:
     % input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret
@@ -44,16 +44,16 @@ solve(Name) :-
 
 	% write final result
 	write("Alternate Solution: "), nl,
-	write_model(OutCoordinates), nl,
+	alt_write_model(OutCoordinates), nl,
 	write("Or properly readable: "), nl,
 	write_board(Board).
 
 solve(Board, Coordinates, Select, Choice, Method, Option) :-
-	model(Board, Coordinates),
+	alt_model(Board, Coordinates),
 	% do the search
 	search(Coordinates, 0, Select, Choice, Method, Option).
 
-write_model(Coordinates) :-
+alt_write_model(Coordinates) :-
 	dim(Coordinates, [N,N]),
 	( for(Number, 1, N), param(N, Coordinates)
 	do
@@ -66,13 +66,7 @@ write_model(Coordinates) :-
 		nl
 	).
 
-write_board(Board) :-
-	( foreach(Row, Board)
-	do
-	    write(Row), nl
-	), nl.
-
-model(Board, Coordinates) :-
+alt_model(Board, Coordinates) :-
 	%Board is a list, but array is more useful
 	( foreach(Row,Board), foreach(RowArray,Out)
 	do
@@ -91,11 +85,11 @@ model(Board, Coordinates) :-
 	Coordinates :: 1..N,
 
 	% set constraints and link board
-	row_col_constraint(Coordinates, N),
-    link(BoardArray, Coordinates, N),
-	block_constraint(Coordinates, N).
+	alt_row_col_constraint(Coordinates, N),
+    alt_link(BoardArray, Coordinates, N),
+	alt_block_constraint(Coordinates, N).
 
-link(BoardArray, Coordinates, N) :-
+alt_link(BoardArray, Coordinates, N) :-
 	% Link the numbers from the board with coordinates
 	( multifor([I,R,C], [1,1,1], [N,N,N]),
 		param(BoardArray, Coordinates)
@@ -109,7 +103,7 @@ link(BoardArray, Coordinates, N) :-
 		% Columns are both just the colums, so C
 	).
 
-row_col_constraint(Coordinates, N) :-
+alt_row_col_constraint(Coordinates, N) :-
 	( for(I, 1, N), param(Coordinates, N)
 	do
 		% Each number (so each row in Coordinates) must have different rows
@@ -118,7 +112,7 @@ row_col_constraint(Coordinates, N) :-
 		alldifferent(Coordinates[1..N,I])
 	).
 
-block_constraint(Coordinates, N) :-
+alt_block_constraint(Coordinates, N) :-
     NN is integer(sqrt(N)),
     ( multifor([Number, X], [1,1], [N, NN]), param(Coordinates, NN)
     do

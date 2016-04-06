@@ -29,12 +29,6 @@ solve(Board, Select, Choice, Method, Option) :-
 	% do the search
 	search(BoardArray, 0, Select, Choice, Method, Option).
 
-write_board(Board) :-
-	( foreach(Row, Board)
-	do
-	    write(Row), nl
-	), nl.
-
 model(Board, BoardArray) :-
 	%Board is a list, we need it as array
 	( foreach(Row,Board), foreach(RowArray,Out)

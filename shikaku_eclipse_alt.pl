@@ -4,6 +4,9 @@
 
 :- compile("puzzles").
 
+% Shikaku Solution where each rect is repesented as Top, Left, Bottom and Right coordinate variables.
+% Works much better.
+
 solve_all :-
 	solve(_),
 	fail.

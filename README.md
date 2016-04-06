@@ -1,12 +1,12 @@
 # APLAI
 Amazing solution for the Advanced Programming Languages for Artificial Intelligence course at KU Leuven. ᕙ(⇀‸↼‶)ᕗ
 
-* Due date: Monday 06/06/2016 13h00. 
+* Due date: Monday 06/06/2016 13h00.
 * You email your report (a pdf file), programs and README file to gerda.janssens@cs.kuleuven.be.
 
 ##Tasks
-* Task 1: Sudoku + alternative
-* Task 2: Shikaku + alternative
+* Task 1: Sudoku + alternative in both Eclipse and CHR
+* Task 2: Shikaku + alternative in both Eclipse and CHR
 * Extra (◕︵◕)
 
 

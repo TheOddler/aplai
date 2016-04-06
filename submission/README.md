@@ -1,14 +1,15 @@
 *__Note:__ This will be pasted in Word afterwards for layout-ing D:*
+*__Note Pablo:__ Fuck that. Dees gewoon builden naar pdf met Pandoc, much nicer.*
 
 Report
 ======
 ***Advanced Programming Languages in A.I.***
 
->Pablo Bollansée [r...]
+>Pablo Bollansée [r0465328]
 >
 >Vincent Tanghe	 [r0294173]
 
- 
+
 INTRODUCTION
 ------------
 
@@ -16,7 +17,7 @@ Constraint Logic Programming (CLP) is an augmentation of the logic programming p
 
 For the course Avanced Programming Languages in Artificial Intelligence, we are given the opportunity to get real experience with some CLP languages. The goal of this assignment is to get practical experience with different CLP languages and to get a deeper understanding in how they work.
 
-First we will discuss our solver for the popular puzzle game Sudoku. Then we will discuss our approach for solving Shikaku. Followed by a discussion of the extra assignment, to end with a conclusion. 
+First we will discuss our solver for the popular puzzle game Sudoku. Then we will discuss our approach for solving Shikaku. Followed by a discussion of the extra assignment, to end with a conclusion.
 
 TASK 1: SUDOKU
 --------------
@@ -61,10 +62,8 @@ TASK 3 (EXTRA)
 CONCLUSION
 ----------
 
-[Strong points, Weak points, lessons learned] 
+[Strong points, Weak points, lessons learned]
 
 APPENDIX
 --------
 Extra Sudoku puzzles we tested came from http://www.planetsudoku.net
-
-

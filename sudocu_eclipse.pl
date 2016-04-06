@@ -62,12 +62,12 @@ square_constraint(BoardArray) :-
 	DD is integer(sqrt(D)),
 	( multifor([I,J],[1,1],[DD,DD]), param(BoardArray,DD)
 	do
-		Right is (I-1) * DD + 1,
-		Left is Right + DD - 1,
+		Left is (I-1) * DD + 1,
+		Right is Left + DD - 1,
 		Top is (J-1) * DD + 1,
 		Bottom is Top + DD - 1,
 
-		Block is BoardArray[Right..Left, Top..Bottom],
+		Block is BoardArray[Left..Right, Top..Bottom],
 		flatten(Block,FlatBlock),
 		alldifferent(FlatBlock)
 	).

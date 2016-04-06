@@ -119,7 +119,7 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 
         % Get an array with all the Y values
         BlockRow is Coordinates[Number, Left..Right],
-        flatten(BlockRow, UnorderedY)
+        flatten(BlockRow, UnorderedY),
 
         % In the array, there must be one Y coordinate for each block
         ( for(BlockNo, 1, NN), param(NN, UnorderedY)

@@ -18,6 +18,7 @@
 % Import libraries & compile sudokus
 :- lib(ic).
 :- lib(util).
+:- lib(listut).
 
 :- compile("sudex_toledo").
 
@@ -80,33 +81,7 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 	dim(Coordinates, [N,N]),
 	Coordinates :: 1..N,
 
-	% ROW/COL Constrain the coordinates
-	( for(I, 1, N), param(Coordinates, N)
-	do
-		% Each number (so each row in Coordinates) must have different rows
-		alldifferent(Coordinates[I,1..N]),
-		% Make sure no two numbers are on the same row and column
-		alldifferent(Coordinates[1..N,I])
-	),
-
-	% Block constraint
-	NN is integer(sqrt(N)),
-	( multifor([Number, I], [1,1], [N, NN]), param(Coordinates, NN)
-	do
-		% take one horizontal block, sudoku of size 9, this has 3 numbers
-		Left is (I-1) * NN + 1,
-		Right is Left + NN - 1,
-		HorBlocks is Coordinates[Number, Left..Right],
-		% these NN numbers, are all different already (thank to other constraint)
-		% but should also be in different blocks
-		% so for a sudoku of size 9, one should be in range 1..3, another in 4..6, 7..9
-		( for(I, 1, NN), foreach(ElSquished, Squished), param(NN, HorBlocks)
-		do
-			El is HorBlocks[I],
-			ElSquished #= integer(floor(El / NN)) % remap them from 1..N to 1..NN, which is their "block number"
-		),
-		alldifferent(Squished)
-	),
+	row_col_constraint(Coordinates),
 
 	% Link the numbers from the board with coordinates
 	( multifor([I,R,C], [1,1,1], [N,N,N]),
@@ -121,5 +96,32 @@ solve(BoardArray, Coordinates, Select, Choice, Method, Option) :-
 		% Columns are both just the colums, so C
 	),
 
+	square_constraint(BoardArray),
+
 	% do the search
 	search(Coordinates, 0, Select, Choice, Method, Option).
+
+row_col_constraint(Coordinates) :-
+	dim(Coordinates, [N,N]),
+	( for(I, 1, N), param(Coordinates, N)
+	do
+		% Each number (so each row in Coordinates) must have different rows
+		alldifferent(Coordinates[I,1..N]),
+		% Make sure no two numbers are on the same row and column
+		alldifferent(Coordinates[1..N,I])
+	).
+
+square_constraint(BoardArray) :-
+	dim(BoardArray, [D,D]),
+	DD is integer(sqrt(D)),
+	( multifor([I,J],[1,1],[DD,DD]), param(BoardArray,DD)
+	do
+		Left is (I-1) * DD + 1,
+		Right is Left + DD - 1,
+		Top is (J-1) * DD + 1,
+		Bottom is Top + DD - 1,
+
+		Block is BoardArray[Left..Right, Top..Bottom],
+		flatten(Block,FlatBlock),
+		alldifferent(FlatBlock)
+	).

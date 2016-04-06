@@ -46,7 +46,7 @@ solve(Board, ModelUsage, Select, Choice, Method, Option) :-
 		model(Board, Variables)
 	; ModelUsage == alt ->
 		alt_model(Board, Variables)
-	; write("Please use 'both', 'simple' or 'alt' as model usage.")
+	; nl, nl, write("Please use 'both', 'simple' or 'alt' as model usage."), nl, nl
 	),
 
 	% do the search

@@ -20,7 +20,7 @@ solve(Name) :- solve(Name, both).
 solve(Name, ModelUsage) :-
 	puzzles(Board,Name),       % get the puzzle
 
-	write("Solving with channeling: "), write(Name),
+	write("Solving with "),write(ModelUsage),write(": "), write(Name),
 
     % Selection methods:
     % input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret

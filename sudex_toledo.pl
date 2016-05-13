@@ -1,9 +1,3 @@
-write_board(Board) :-
-	( foreach(Row, Board)
-	do
-	    write(Row), nl
-	), nl.
-
 puzzles(P,verydifficult) :- verydifficult(P).
 puzzles(P,expert) :- expert(P).
 puzzles(P,lambda) :- lambda(P).

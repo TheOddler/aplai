@@ -20,6 +20,7 @@
 :- lib(util).
 
 :- compile("sudex_toledo").
+:- compile("sudoku_eclipse_util").
 
 % Alternate sudoku solution where we have lists of coordinates, rather than rows of numbers
 

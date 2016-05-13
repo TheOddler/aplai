@@ -2,6 +2,7 @@
 :- lib(util).
 
 :- compile("sudex_toledo").
+:- compile("sudoku_eclipse_util").
 
 solve_all :-
 	solve(_),

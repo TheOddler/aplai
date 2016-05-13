@@ -9,6 +9,7 @@
 :- compile("sudex_toledo").
 :- compile("sudoku_eclipse").
 :- compile("sudoku_eclipse_alt").
+:- compile("sudoku_eclipse_util").
 
 solve_all :-
 	solve(_),

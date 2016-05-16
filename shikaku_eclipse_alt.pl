@@ -1,6 +1,7 @@
 :- lib(ic).
 %:- lib(gfd).
 :- lib(util).
+:- lib(lists).
 
 :- compile("puzzles").
 
@@ -44,7 +45,7 @@ solve(GridW, GridH, Hints, Solution, Select, Choice, Method, Option) :-
 	% Create constraints
 	( foreach((X,Y,Area), Hints),
 	  foreach(Rect, Solution), %will be filled
-	  param(GridW), param(GridH)
+	  param(GridW), param(GridH), param(Hints)
 	do
 		Rect = rect(c(X,Y), Top, Left, Bottom, Right),
 		Top #=< Bottom,
@@ -52,7 +53,11 @@ solve(GridW, GridH, Hints, Solution, Select, Choice, Method, Option) :-
 
 		inside_grid(Top, Left, Bottom, Right, GridW, GridH),
 		has_area(Top, Left, Bottom, Right, Area),
-		contains_point(Top, Left, Bottom, Right, X, Y)
+		contains_point(Top, Left, Bottom, Right, X, Y),
+
+		% extra redundant constraint
+		subtract(Hints, [(X,Y,Area)], OtherHints),
+		doesnt_contain_hints(Top, Left, Bottom, Right, OtherHints)
 	),
 	no_overlap(Solution),
 	term_variables(Solution, Vars),
@@ -78,6 +83,18 @@ contains_point(Top, Left, Bottom, Right, X, Y) :-
 	X #=< Right,
 	Y #>= Top,
 	Y #=< Bottom.
+
+% Additional redundant constraint:
+% Does not containt points
+doesnt_contain_hints(Top, Left, Bottom, Right, Hints) :-
+	( foreach((X,Y,_), Hints),
+	  param(Top), param(Left), param(Bottom), param(Right)
+	do
+		X #< Left or
+		X #> Right or
+		Y #< Top or
+		Y #> Bottom
+	).
 
 % No-overlap
 no_overlap(Rects) :-

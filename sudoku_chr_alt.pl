@@ -136,11 +136,11 @@ eliminate_in_col @ propagate,
 	%different row, same value, one has exact col, eliminate that col from the other
 	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
 	<=> RowA \= RowB, select(ColA, [C1,C2|Cs], NewCs) | rvc((RowB,Val),NewCs).
-eliminate_in_box @ propagate,
-	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
-	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-		SameBoxCols = [_|_], %at least one same col
-		subtract([C1,C2|Cs], SameBoxCols, NewCs) | rvc((RowB,Val),NewCs).
+%eliminate_in_box @ propagate,
+%	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
+%	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+%		SameBoxCols = [_|_], %at least one same col
+%		subtract([C1,C2|Cs], SameBoxCols, NewCs) | rvc((RowB,Val),NewCs).
 
 propagate <=> search(2).
 

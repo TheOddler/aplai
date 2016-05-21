@@ -20,7 +20,8 @@ solve(Name) :-
 	% Selection methods: smallest works best apparently
 	% input_order, anti_first_fail, first_fail, smallest, occurrence, largest, most_constrained, max_regret
 	% Choice methods:
-	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max, indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
+	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max,
+    % indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
 	time(solve(GridW, GridH, Hints, Solution, smallest, indomain, complete, [backtrack(B)])),
 
 	write("Required "), write(B), write(" backtracks"), nl,

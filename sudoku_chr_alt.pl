@@ -111,6 +111,19 @@ same_box_cols(RowA,ColA,RowB,[ColB|RestColB], AggrCols,Out) :-
 same_box_cols(RowA,ColA,RowB,ColsB,SameBoxCols) :-
 	same_box_cols(RowA,ColA,RowB,ColsB,[],SameBoxCols).
 
+test_same_box_cols(Output) :-
+	b_setval(blockwidth, 3),
+	RowA = 5,
+	ColA = 5,
+	RowB = 1,
+	[C1,C2|Cs] = [1,2,3,4,5,6,7,8,9],
+
+	same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+	length(SameBoxCols,Count), Count > 0, %at least one same col
+	subtract([C1,C2|Cs], SameBoxCols, NewCs),
+
+	Output = NewCs.
+
 % combine the rvcs with for the same row and num
 combine_rvcs @ rvc((Row,Val), [Col]), rvc((Row,Val), Cols) # passive
     <=> rvc((Row,Val), [Col | Cols]).
@@ -137,17 +150,21 @@ eliminate_in_col @ propagate,
 	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
 	<=> RowA \= RowB, select(ColA, [C1,C2|Cs], NewCs) | rvc((RowB,Val),NewCs).
 %eliminate_in_box @ propagate,
+	% two same values, one has exact col and row, the other only row
+	% check for the other all the cols that would put it in the same box
+	% remove these collumns from it's possible cols
 %	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
 %	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-%		SameBoxCols = [_|_], %at least one same col
-%		subtract([C1,C2|Cs], SameBoxCols, NewCs) | rvc((RowB,Val),NewCs).
+%		length(SameBoxCols,Count), Count > 0, %at least one same col
+%		subtract([C1,C2|Cs], SameBoxCols, NewCs)
+%		| rvc((RowB,Val),NewCs).
 
 propagate <=> search(2).
 
 first_fail @ search(N), rvc((Row,Val), Cs) # passive
 	<=> length(Cs, N) | member(C, Cs), rvc((Row,Val), [C]), propagate.
 
-search(9) <=> true.
+search(N) <=> nb_getval(width, Width), N == Width | true.
 search(N) <=> NN is N + 1, search(NN).
 
 cleanup \ rvc(_, _) <=> true.

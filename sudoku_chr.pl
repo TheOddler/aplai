@@ -96,7 +96,6 @@ box(Row-Col, ORow-OCol) :-
     (Row - 1) // BlockWidth =:= (ORow - 1) // BlockWidth,
     (Col - 1) // BlockWidth =:= (OCol - 1) // BlockWidth.
 
-
 % Constraints
 
 alldifferent_in_row @ cell((Row, ColA), [Value]), cell((Row,ColB), [Value]) # passive
@@ -125,7 +124,7 @@ propagate <=> search(2).
 first_fail @ search(N), cell((Row,Col), Vs) # passive
 <=> length(Vs, Len), Len =:= N | member(V, Vs), cell((Row,Col), [V]), propagate.
 
-search(9) <=> true.
+search(N) <=> nb_getval(width, Width), N == Width | true.
 search(N) <=> NN is N + 1, search(NN).
 
 cleanup \ cell(_, _) <=> true.

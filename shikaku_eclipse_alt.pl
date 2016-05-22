@@ -4,6 +4,7 @@
 :- lib(lists).
 
 :- compile("puzzles").
+:- compile("print_shikaku").
 
 % Shikaku Solution where each rect is repesented as Top, Left, Bottom and Right coordinate variables.
 % Works much better.
@@ -27,8 +28,22 @@ solve(Name) :-
 	write("Required "), write(B), write(" backtracks"), nl,
 
 	% write final result
-	write_solution(Solution).
+	write_solution(GridW, GridH, Hints, Solution).
 
+write_solution(GridW, GridH, Hints, Solution) :-
+	% Transform view to uniform with the school shikaku print
+	( foreach(rect(Id, Top, Left, Bottom, Right), Solution),
+	  foreach(Rect, SolutionAlt) %will be filled
+	do
+		C = c(Left, Top),
+		W is Right - Left + 1,
+		H is Bottom - Top + 1,
+		S = s(W,H),
+		Rect = rect(Id,C,S)
+	),
+	show(GridW, GridH, Hints, SolutionAlt, ascii).
+
+/*
 write_solution(Solution) :-
 	write("Solution = ["), nl,
 	( foreach(rect(Id, Top, Left, Bottom, Right), Solution)
@@ -40,6 +55,7 @@ write_solution(Solution) :-
 		write("\t"), write(rect(Id,C,S)), write(",") , nl
 	),
 	write("]"), nl, nl.
+*/
 
 solve(GridW, GridH, Hints, Solution, Select, Choice, Method, Option) :-
 	% Create constraints

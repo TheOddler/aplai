@@ -3,6 +3,7 @@
 :- lib(util).
 
 :- compile("puzzles").
+:- compile("print_shikaku").
 
 % Simple Shikaku Solution where each rect is repesented as X,Y coordinates, and Width, Height variables.
 % Slower than the alternative solution.
@@ -27,7 +28,8 @@ solve(Name) :-
 	write("Required "), write(B), write(" backtracks"), nl,
 
 	% write final result
-	write_solution(Solution).
+	show(GridW, GridH, Hints, Solution, ascii).
+%	write_solution(Solution).
 
 write_solution(Solution) :-
 	write("Solution = ["), nl,

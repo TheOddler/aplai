@@ -4,40 +4,83 @@
 
 :- consult('puzzles.pl').
 
-% Simple Shikaku Solution where each rect is repesented as X,Y coordinates, and Width, Height variables.
+% Simple Shikaku Solution where each rect is repesented as
+% X,Y coordinates, and Width, Height variables.
 
 % Define types
 :- chr_type list(T) ---> [] ; [T | list(T)].
-:- chr_type cor ---> (natural, natural).    % x and y coordinates
-:- chr_type size ---> (natural, natural).   % height x width
-%:- chr_type rect ---> (natural, cor, size)
+:- chr_type c ---> (natural, natural).    % x and y coordinates
+:- chr_type s ---> (natural, natural).   % height x width
+:- chr_type tuple ---> (natural, natural).   % height x width
+%:- chr_type rect ---> (natural, c, s)
 :- chr_type val ---> [] ; [natural | list(natural)]. % Value or list of possible values
 
 % Define constraints
-:- chr_constraint board(+natural, +natural, ?list(val)).
-:- chr_constraint rect(?val, +cor, +size).
+:- chr_constraint rect(+tuple, ?c, ?s).
+%:- chr_constraint contains_point(+c, +s, +natural, +natural).
+:- chr_constraint has_area(+s, +natural).
+:- chr_constraint inside_grid(+c, +s, +natural, +natural).
 :- chr_constraint search(+natural).
 :- chr_constraint propagate, cleanup.
 
-% Shikaku Solution where each rect is repesented as Top, Left, Bottom and Right coordinate variables.
-% Works much better.
+contains_point @ rect((Px,Py), c(X,Y), s(W,H))
+	<=> Px >= X, Py >= Y, Px < X + W, Py < Y + H | true.
 
+% Solve all puzzles
 solve_all :-
 	solve(_),
 	fail.
 solve_all.
 
-write_solution(Solution) :-
-	write("Solution = ["), nl,
-	( foreach(Rect, Solution)
-	do
-		write("\t"), write(Rect), write(",") , nl
-	),
-	write("]"), nl, nl.
+% Solve puzzle with specific name
+solve(Name) :-
+	problem(Name, GridW, GridH, Hints),  % get the puzzle
+    write('Solving: '), write(Name), nl, % Feedback puzzle name
+
+	% Solve puzzle + feedback stats
+    once(time(solve(GridW, GridH, Hints, Solution))),
+    %format('Runtime: ~`.t ~2f~34|  Backtracks: ~`.t ~D~72|~n', [RunT, BackT]),
+    write_solution(Solution),
+    cleanup.
+
+solve(GridW, GridH, Hints, Solution):-
+	create_rectangles(GridW, GridH, Hints),
+	propagate.
+
+create_rectangles(_, _, []) :- !.
+create_rectangles(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
+	Pos = c(_,_),
+	Size = s(_,_),
+	inside_grid(Pos, Size, GridW, GridH),
+	has_area(Size, Area),
+	Rect = rect((X,Y), Area, Pos, Size),
+
+	create_rectangles(GridW, GridH, OtherHints).
+
+
+% Get calculate the area for a certain width and height
+%area(s(W,H), Area) :- Area is W * H.
+/*
+contains_point(c(X,Y), s(W,H), PX, PY)
+	<=> PX >= X,
+		PY >= Y,
+		PX < X + W,
+		PY < Y + H | true.
+*/
+% Rects are inside the grid
+inside_grid(c(X,Y), s(W,H), GridW, GridH)
+	<=> X + W =< GridW + 1, Y + H =< GridH + 1 | true.
+
+has_area(s(W,H), Area)
+	<=> Area is W * H |true.
+
+write_solution(_) :-
+	write("Solved = ["), nl.
 
 
 % Constraints
-no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
+/*
+no_overlap @ rect(_,c(X1,_),s(W1,_)), rect(_,c(X2,_),_) # passive
 	<=> X1 + W1 =< X2 | false.
 no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
 	<=> X2 + W2 =< X1 | false.
@@ -45,42 +88,19 @@ no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
 	<=> Y1 + H1 =< Y2 | false.
 no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
 	<=> Y2 + H2 =< Y1 | false.
+*/
+no_overlap @ propagate,
+ 	rect(_,c(X1,_), s(W1,_)), rect(_,c(X2,_), _) # passive
+	<=> X1 + W1 =< X2 | false.
+no_overlap @ propagate,
+ 	rect(_,c(X1,_), _), rect(_,c(X2,_), s(W2,_)) # passive
+	<=> X2 + W2 =< X1 | false.
+no_overlap @  propagate,
+	rect(_,c(_,Y1), s(_,H1)), rect(_,c(_,Y2), _) # passive
+	<=> Y1 + H1 =< Y2 | false.
+no_overlap @  propagate,
+	rect(_,c(_,Y1), _), rect(_,c(_,Y2), s(_,H2)) # passive
+	<=> Y2 + H2 =< Y1 | false.
 
-contains_point @ c(X,Y), s(W,H), PX, PY) :-
-		PX #>= X,
-		PY #>= Y,
-		PX #< X + W,
-		PY #< Y + H.
-
-
-alldifferent_in_row @ cell((Row, ColA), [Value]), cell((Row,ColB), [Value]) # passive
-    <=> ColA \= ColB | false.
-alldifferent_in_column @ cell((RowA, Col), [Value]), cell((RowB,Col), [Value]) # passive
-    <=> RowA \= RowB | false.
-alldifferent_in_box @ cell((Row,Col), [Value]), cell((ORow,OCol), [Value]) # passive
-    <=> (Row \= ORow ; Col \= OCol), box(Row-Col, ORow-OCol) | false.
-
-eliminate_in_row @ propagate, cell((Row,_), [Value])
-    \ cell((Row,Col), [V1, V2 | Vs])
-    <=> select(Value, [V1, V2 | Vs], NVs)
-        | cell((Row, Col), NVs).
-eliminate_in_column @ propagate, cell((_,Col), [Value])
-    \ cell((Row,Col), [V1, V2 | Vs])
-    <=> select(Value, [V1, V2 | Vs], NVs)
-        | cell((Row,Col), NVs).
-eliminate_in_box @ propagate, cell((Row,Col), [Value])
-    \ cell((ORow,OCol), [V1, V2 | Vs])
-    <=> (Row \= ORow ; Col \= OCol), box(Row-Col, ORow-OCol),
-        select(Value, [V1, V2 | Vs], NVs)
-        | cell((ORow,OCol), NVs).
-
-propagate <=> search(2).
-
-first_fail @ search(N), cell((Row,Col), Vs) # passive
-<=> length(Vs, Len), Len =:= N | member(V, Vs), cell((Row,Col), [V]), propagate.
-
-search(9) <=> true.
-search(N) <=> NN is N + 1, search(NN).
-
-cleanup \ cell(_, _) <=> true.
+cleanup \ rect(_, _, _) <=> true.
 cleanup <=> true.

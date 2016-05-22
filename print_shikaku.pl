@@ -1,68 +1,68 @@
 % Symbols: every corner has 4 exits  N E S W corresponding to bits 1248
-%   
+%
 
 init_format(unicode).
 init_format(ascii).
 init_format(latex) :-
     write('% \\usepackage{pmboxdraw}'), nl.
-    
-corner_symbol(unicode, 0, " ").
-corner_symbol(unicode, 1, "?").
-corner_symbol(unicode, 2, "?").
-corner_symbol(unicode, 3, "└").  % NE
-corner_symbol(unicode, 4, "?").
-corner_symbol(unicode, 5, "│"). % NS
-corner_symbol(unicode, 6, "┌"). % ES
-corner_symbol(unicode, 7, "├"). % NES
-corner_symbol(unicode, 8, "?"). 
-corner_symbol(unicode, 9, "┘"). % WN
-corner_symbol(unicode, 10, "─"). % EW
-corner_symbol(unicode, 11, "┴"). % NEW
-corner_symbol(unicode, 12, "┐"). % SW
-corner_symbol(unicode, 13, "┤"). % NSW
-corner_symbol(unicode, 14, "┬"). % ESW
-corner_symbol(unicode, 15, "┼"). % NESW
 
-corner_symbol(ascii, 0, " ").
-corner_symbol(ascii, 1, "?").
-corner_symbol(ascii, 2, "?").
-corner_symbol(ascii, 3, "+").  % NE
-corner_symbol(ascii, 4, "?").
-corner_symbol(ascii, 5, "|"). % NS
-corner_symbol(ascii, 6, "+"). % ES
-corner_symbol(ascii, 7, "+"). % NES
-corner_symbol(ascii, 8, "?"). 
-corner_symbol(ascii, 9, "+"). % WN
-corner_symbol(ascii, 10, "-"). % EW
-corner_symbol(ascii, 11, "+"). % NEW
-corner_symbol(ascii, 12, "+"). % SW
-corner_symbol(ascii, 13, "+"). % NSW
-corner_symbol(ascii, 14, "+"). % ESW
-corner_symbol(ascii, 15, "+"). % NESW
+corner_symbol(unicode, 0, ' ').
+corner_symbol(unicode, 1, '?').
+corner_symbol(unicode, 2, '?').
+corner_symbol(unicode, 3, '└').  % NE
+corner_symbol(unicode, 4, '?').
+corner_symbol(unicode, 5, '│'). % NS
+corner_symbol(unicode, 6, '┌'). % ES
+corner_symbol(unicode, 7, '├'). % NES
+corner_symbol(unicode, 8, '?').
+corner_symbol(unicode, 9, '┘'). % WN
+corner_symbol(unicode, 10, '─'). % EW
+corner_symbol(unicode, 11, '┴'). % NEW
+corner_symbol(unicode, 12, '┐'). % SW
+corner_symbol(unicode, 13, '┤'). % NSW
+corner_symbol(unicode, 14, '┬'). % ESW
+corner_symbol(unicode, 15, '┼'). % NESW
 
-corner_symbol(latex, 0, " ").
-corner_symbol(latex, 1, "?").
-corner_symbol(latex, 2, "?").
-corner_symbol(latex, 3, "\\textSFii").  % NE
-corner_symbol(latex, 4, "?").
-corner_symbol(latex, 5, "\\textSFxi"). % NS
-corner_symbol(latex, 6, "\\textSFi"). % ES
-corner_symbol(latex, 7, "\\textSFviii"). % NES
-corner_symbol(latex, 8, "?"). 
-corner_symbol(latex, 9, "\\textSFiv"). % WN
-corner_symbol(latex, 10, "\\textSFx"). % EW
-corner_symbol(latex, 11, "\\textSFvii"). % NEW
-corner_symbol(latex, 12, "\\textSFiii"). % SW
-corner_symbol(latex, 13, "\\textSFix"). % NSW
-corner_symbol(latex, 14, "\\textSFvi"). % ESW
-corner_symbol(latex, 15, "\\textSFv"). % NESW
+corner_symbol(ascii, 0, ' ').
+corner_symbol(ascii, 1, '?').
+corner_symbol(ascii, 2, '?').
+corner_symbol(ascii, 3, '+').  % NE
+corner_symbol(ascii, 4, '?').
+corner_symbol(ascii, 5, '|'). % NS
+corner_symbol(ascii, 6, '+'). % ES
+corner_symbol(ascii, 7, '+'). % NES
+corner_symbol(ascii, 8, '?').
+corner_symbol(ascii, 9, '+'). % WN
+corner_symbol(ascii, 10, '-'). % EW
+corner_symbol(ascii, 11, '+'). % NEW
+corner_symbol(ascii, 12, '+'). % SW
+corner_symbol(ascii, 13, '+'). % NSW
+corner_symbol(ascii, 14, '+'). % ESW
+corner_symbol(ascii, 15, '+'). % NESW
+
+corner_symbol(latex, 0, ' ').
+corner_symbol(latex, 1, '?').
+corner_symbol(latex, 2, '?').
+corner_symbol(latex, 3, '\\textSFii').  % NE
+corner_symbol(latex, 4, '?').
+corner_symbol(latex, 5, '\\textSFxi'). % NS
+corner_symbol(latex, 6, '\\textSFi'). % ES
+corner_symbol(latex, 7, '\\textSFviii'). % NES
+corner_symbol(latex, 8, '?').
+corner_symbol(latex, 9, '\\textSFiv'). % WN
+corner_symbol(latex, 10, '\\textSFx'). % EW
+corner_symbol(latex, 11, '\\textSFvii'). % NEW
+corner_symbol(latex, 12, '\\textSFiii'). % SW
+corner_symbol(latex, 13, '\\textSFix'). % NSW
+corner_symbol(latex, 14, '\\textSFvi'). % ESW
+corner_symbol(latex, 15, '\\textSFv'). % NESW
 
 corner_symbol(N, S) :- corner_symbol(u, N, S).
 
 select_from_list(X, [X|R], R).
 select_from_list(X, [H|R], [H|S]) :-
     select_from_list(X, R, S).
-    
+
 
 update_bit_list(Key, Value, ListIn, [(Key, NewValue)|Rest]) :-
     select_from_list((Key, CurrentValue), ListIn, Rest),
@@ -80,12 +80,12 @@ update_bit_list(Key, Value, ListIn, [(Key, Value)|ListIn]).
 
 show(BoardW, BoardH, Hints, Rectangles) :-
     show(BoardW, BoardH, Hints, Rectangles, unicode).
-    
+
 show(BoardW, BoardH, Hints, chr, Format) :-
     !,
     findall(rect(A,B,C), find_chr_constraint(rect(A,B,C)), Rectangles),
     show(BoardW, BoardH, Hints, Rectangles, Format).
-    
+
 show(BoardW, BoardH, Hints, Rectangles, Format) :-
     init_format(Format),
     collect_lines([rect(_, c(1,1), s(BoardW, BoardH))|Rectangles], [], Corners, [], Edges),
@@ -95,7 +95,7 @@ show(BoardW, BoardH, Hints, Rectangles, Format) :-
     )))),
     Y1 is BoardH + 1,
     draw_line(1, Y1, BoardW, Corners, Edges, Format).
-    
+
 draw_line(X, Y, W, Corners, _, Format) :-
     X =:= W + 1,
     !,
@@ -121,7 +121,7 @@ draw_line(X, Y, W, Corners, Edges, Format) :-
     ),
     X1 is X + 1,
     draw_line(X1, Y, W, Corners, Edges, Format).
-    
+
 draw_row(X, Y, W, _, Edges, Format) :-
     X =:= W + 1,
     !,
@@ -146,7 +146,7 @@ draw_row(X, Y, W, Hints, Edges, Format) :-
     ),
     X1 is X + 1,
     draw_row(X1, Y, W, Hints, Edges, Format).
-        
+
 collect_lines([], Corners, Corners, Edges, Edges).
 collect_lines([rect(_, c(X,Y), s(W,H))|Rest], CornersIn, CornersOut, EdgesIn, EdgesOut) :-
     collect_lines_hline(X, Y, W, CornersIn, Corners1, EdgesIn, Edges1),
@@ -192,7 +192,7 @@ collect_lines_vline1(X, Y, Len, CornersIn, CornersOut, EdgesIn, EdgesOut) :-
     Len1 is Len - 1,
     Y1 is Y + 1,
     collect_lines_vline1(X, Y1, Len1, Corners1, CornersOut, Edges1, EdgesOut).
-    
+
 write_hint(Hint) :-
     Hint < 10, !,
     write(' '), write(Hint), write(' ').
@@ -203,10 +203,9 @@ write_hint(Hint) :-
 
 write_hint(Hint) :-
     write(Hint).
-    
+
 xbetween(A, B, A) :- A =< B.
 xbetween(A, B, X) :-
     A < B,
     A1 is A + 1,
     xbetween(A1, B, X).
-        

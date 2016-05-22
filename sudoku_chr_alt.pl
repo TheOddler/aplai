@@ -25,6 +25,15 @@ solve_all :-
 	fail.
 solve_all.
 
+solve_simple :-
+    %solve(verydifficult), nl, %23 minutes
+    %solve(expert), nl, %hours, still nothing
+    solve(lambda), nl,
+    solve(symme), nl,
+    solve(eastermonster), nl,
+    solve(coloin), nl,
+    solve(sudowiki_nb28), nl.
+
 % Solve puzzle with specific name
 solve(Name) :-
 	puzzles(Board,Name),                 % get the puzzle
@@ -136,15 +145,15 @@ eliminate_in_col @ propagate,
 	%different row, same value, one has exact col, eliminate that col from the other
 	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
 	<=> RowA \= RowB, select(ColA, [C1,C2|Cs], NewCs) | rvc((RowB,Val),NewCs).
-eliminate_in_box @ propagate,
+%eliminate_in_box @ propagate,
 	% two same values, one has exact col and row, the other only row
 	% check for the other all the cols that would put it in the same box
 	% remove these collumns from it's possible cols
-	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
-	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-		SameBoxCols = [_|_], %at least one same col
-		subtract([C1,C2|Cs], SameBoxCols, NewCs)
-		| ( NewCs = [] -> false; rvc((RowB,Val),NewCs) ).
+%	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
+%	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+%		SameBoxCols = [_|_], %at least one same col
+%		subtract([C1,C2|Cs], SameBoxCols, NewCs)
+%		| ( NewCs = [] -> false; rvc((RowB,Val),NewCs) ).
 
 propagate <=> search(2).
 

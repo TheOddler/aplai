@@ -12,7 +12,7 @@
 :- chr_constraint board(+natural, +natural, ?list(val)).
 :- chr_constraint rvc(+rv, +list(natural)).
 :- chr_constraint search(+natural).
-:- chr_constraint propagate, cleanup.
+:- chr_constraint propagate, cleanup, combine, stop_combine.
 
 % Check if square and get width + length of a block
 board(_, _, []) ==> fail.
@@ -26,9 +26,9 @@ solve_all :-
 solve_all.
 
 solve_simple :-
-    %solve(verydifficult), nl, %23 minutes
-    %solve(expert), nl, %hours, still nothing
-    solve(lambda), nl,
+    %solve(verydifficult), nl, % 23 minutes (without box-prop)
+    %solve(expert), nl, % many many hours, still nothing (without box-prop)
+    solve(lambda), nl, % 3 hours (without box-prop)
     solve(symme), nl,
     solve(eastermonster), nl,
     solve(coloin), nl,
@@ -48,10 +48,6 @@ solve(Name) :-
     print_board(Width),
     cleanup.
 
-solve(Board, Width) :-
-    create_grid(Board, 1, Width),
-    propagate.
-
 % Print the board
 print_board(X) :- Y is X*X, print_board(0, X, Y).
 print_board(X, _, X).
@@ -68,28 +64,56 @@ print_board(P, X, Y):-
     (NewP mod (BlockWidth*X) =:= 0 -> nl;true),
 	print_board(NewP, X, Y).
 
-create_grid([], _, _):- !.
-create_grid([Row |RestRows], RowNum, Max) :-
-    create_rows(Row, RowNum, 1, Max),
-    RowNext is RowNum + 1,
-    create_grid(RestRows, RowNext, Max).
+solve(Board, Width) :-
+    combine,
+    create_grid_unknown(Board, 1, Width),
+    stop_combine,
+    create_grid_known(Board, 1, Width),
+    %chr_show_store(chr_sudoku_alt), nl,
+    propagate.
 
-create_rows([], _, _, _) :- !.
-create_rows([Num | ColRest], RowNum, ColNum, Max) :-
-    (nonvar(Num) -> % If value is Number, not _
-		%cell((RowNum, ColNum), [Num]);
-		rvc((RowNum,Num),[ColNum])
-	; % else (so now value is _)
+create_grid_unknown([], _, _):- true.
+create_grid_unknown([Row |RestRows], RowNum, Max) :-
+    exclude(var,Row,RowKnown),
+    create_rows_unknown(Row, RowKnown, RowNum, 1, Max),
+    RowNext is RowNum + 1,
+    create_grid_unknown(RestRows, RowNext, Max).
+
+create_rows_unknown([], _, _, _, _) :- !.
+create_rows_unknown([Num | ColRest], RowKnown, RowNum, ColNum, Max) :-
+        %write('***1'), nl,
+    (var(Num) -> % If value is Number, not _
         range(Nums, 1, Max),
-		create_unknown_rvc(RowNum,ColNum,Nums)
+        subtract(Nums,RowKnown,PossibleNums),
+		create_unknown_rvc(RowNum,ColNum,PossibleNums)
+    ; true
+    ),
+        %write('***2'), nl,
+    ColNext is ColNum + 1,
+    create_rows_unknown(ColRest, RowKnown, RowNum, ColNext, Max).
+
+create_unknown_rvc(_,_,[]) :- true.
+create_unknown_rvc(Row, Col, [Num|Rest]) :-
+        %write('+++1'), nl,
+	rvc((Row,Num),[Col]),
+        %write('+++2'), nl,
+	create_unknown_rvc(Row,Col,Rest).
+
+
+create_grid_known([], _, _):- true.
+create_grid_known([Row |RestRows], RowNum, Max) :-
+    create_rows_known(Row, RowNum, 1, Max),
+    RowNext is RowNum + 1,
+    create_grid_known(RestRows, RowNext, Max).
+
+create_rows_known([], _, _, _) :- true.
+create_rows_known([Num | ColRest], RowNum, ColNum, Max) :-
+    (nonvar(Num) -> % If value is Number, not _
+		rvc((RowNum,Num),[ColNum])
+	; true
     ),
     ColNext is ColNum + 1,
-    create_rows(ColRest, RowNum, ColNext, Max).
-
-create_unknown_rvc(_,_,[]) :- !.
-create_unknown_rvc(Row, Col, [Num|Rest]) :-
-	rvc((Row,Num),[Col]),
-	create_unknown_rvc(Row,Col,Rest).
+    create_rows_known(ColRest, RowNum, ColNext, Max).
 
 /*
  * Utils
@@ -121,18 +145,19 @@ same_box_cols(RowA,ColA,RowB,ColsB,SameBoxCols) :-
 	same_box_cols(RowA,ColA,RowB,ColsB,[],SameBoxCols).
 
 % combine the rvcs with for the same row and num
-combine_rvcs @ rvc((Row,Val), [Col]), rvc((Row,Val), Cols) # passive
-    <=> rvc((Row,Val), [Col | Cols]).
+combine_rvcs @ combine \ rvc((Row,Val), ColsA), rvc((Row,Val), ColsB) # passive
+    <=> append(ColsA, ColsB, ColsTotal), rvc((Row,Val), ColsTotal).
+stop_combine @ stop_combine, combine <=> true.
 
 % Constraints
 alldifferent_in_row @ propagate,
-	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB]) # passive
+	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB])
 	<=> ColA \= ColB | false.
 alldifferent_in_col @ propagate,
-	rvc((RowA,Value),[Col]), rvc((RowB,Value),[Col]) # passive
+	rvc((RowA,Value),[Col]), rvc((RowB,Value),[Col])
 	<=> RowA \= RowB | false.
 alldifferent_in_box @ propagate,
-	rvc((RowA,Value),[ColA]), rvc((RowB,Value),[ColB]) # passive
+	rvc((RowA,Value),[ColA]), rvc((RowB,Value),[ColB])
 	<=> (RowA \= RowB ; ColA \= ColB), same_box(RowA,ColA,RowB,ColB)
 	| false.
 
@@ -140,25 +165,27 @@ alldifferent_in_box @ propagate,
 eliminate_in_row @ propagate,
 	%same row, different values, one has exact col, eliminate that col from the other
 	rvc((Row,ValA),[ColA]) \ rvc((Row,ValB),[C1,C2|Cs])
-	<=> ValA \= ValB, select(ColA, [C1,C2|Cs], NewCs) | rvc((Row,ValB),NewCs).
+	<=> ValA \= ValB, select(ColA, [C1,C2|Cs], NewCs) | ( NewCs = [] -> false; rvc((Row,ValB),NewCs) ).
 eliminate_in_col @ propagate,
 	%different row, same value, one has exact col, eliminate that col from the other
 	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
-	<=> RowA \= RowB, select(ColA, [C1,C2|Cs], NewCs) | rvc((RowB,Val),NewCs).
-%eliminate_in_box @ propagate,
+	<=> RowA \= RowB, select(ColA, [C1,C2|Cs], NewCs) | ( NewCs = [] -> false; rvc((RowB,Val),NewCs) ).
+eliminate_in_box @ propagate,
 	% two same values, one has exact col and row, the other only row
 	% check for the other all the cols that would put it in the same box
 	% remove these collumns from it's possible cols
-%	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
-%	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-%		SameBoxCols = [_|_], %at least one same col
-%		subtract([C1,C2|Cs], SameBoxCols, NewCs)
-%		| ( NewCs = [] -> false; rvc((RowB,Val),NewCs) ).
+	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
+	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+		SameBoxCols = [_|_], %at least one same col
+		subtract([C1,C2|Cs], SameBoxCols, NewCs)
+		| ( NewCs = [] -> false; rvc((RowB,Val),NewCs) ).
 
 propagate <=> search(2).
 
-first_fail @ search(N), rvc((Row,Val), Cs) # passive
-	<=> length(Cs, N) | member(C, Cs), rvc((Row,Val), [C]), propagate.
+first_fail @ search(N), rvc((Row,Val), Cs)
+	<=> length(Cs, N)
+    | %write('Search: '), write(N), write(','), write(((Row,Val), Cs-C)), nl, %chr_show_store(chr_sudoku_alt), nl,
+    member(C, Cs), rvc((Row,Val), [C]), propagate.
 
 search(N) <=> nb_getval(width, Width), N == Width | true.
 search(N) <=> NN is N + 1, search(NN).

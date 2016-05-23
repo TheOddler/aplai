@@ -21,18 +21,10 @@ board(Width, BlockWidth, Board)
 
 % Solve all puzzles
 solve_all :-
+    cleanup,
 	solve(_), nl,
 	fail.
 solve_all.
-
-solve_simple :-
-    %solve(verydifficult), nl, % 23 minutes (without box-prop)
-    %solve(expert), nl, % many many hours, still nothing (without box-prop)
-    solve(lambda), nl, % 3 hours (without box-prop)
-    solve(symme), nl,
-    solve(eastermonster), nl,
-    solve(coloin), nl,
-    solve(sudowiki_nb28), nl.
 
 % Solve puzzle with specific name
 solve(Name) :-
@@ -45,6 +37,7 @@ solve(Name) :-
 
     once(time(solve(Board, Width))),     % Solve puzzle + feedback stats
     %format('Runtime: ~`.t ~2f~34|  Backtracks: ~`.t ~D~72|~n', [RunT, BackT]),
+    %chr_show_store(chr_sudoku_alt), nl, %for debugging
     print_board(Width),
     cleanup.
 
@@ -69,7 +62,6 @@ solve(Board, Width) :-
     create_grid_unknown(Board, 1, Width),
     stop_combine,
     create_grid_known(Board, 1, Width),
-    %chr_show_store(chr_sudoku_alt), nl,
     propagate.
 
 create_grid_unknown([], _, _):- true.
@@ -150,14 +142,17 @@ combine_rvcs @ combine \ rvc((Row,Val), ColsA), rvc((Row,Val), ColsB) # passive
 stop_combine @ stop_combine, combine <=> true.
 
 % Constraints
+no_double_booking @ propagate,
+    rvc((Row,ValA),[Col]), rvc((Row,ValB),[Col])
+    <=> ValA \= ValB | false.
 alldifferent_in_row @ propagate,
-	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB])
+	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB]) # passive
 	<=> ColA \= ColB | false.
 alldifferent_in_col @ propagate,
-	rvc((RowA,Value),[Col]), rvc((RowB,Value),[Col])
+	rvc((RowA,Value),[Col]), rvc((RowB,Value),[Col]) # passive
 	<=> RowA \= RowB | false.
 alldifferent_in_box @ propagate,
-	rvc((RowA,Value),[ColA]), rvc((RowB,Value),[ColB])
+	rvc((RowA,Value),[ColA]), rvc((RowB,Value),[ColB]) # passive
 	<=> (RowA \= RowB ; ColA \= ColB), same_box(RowA,ColA,RowB,ColB)
 	| false.
 
@@ -182,7 +177,7 @@ eliminate_in_box @ propagate,
 
 propagate <=> search(2).
 
-first_fail @ search(N), rvc((Row,Val), Cs)
+first_fail @ search(N), rvc((Row,Val), Cs) # passive
 	<=> length(Cs, N)
     | %write('Search: '), write(N), write(','), write(((Row,Val), Cs-C)), nl, %chr_show_store(chr_sudoku_alt), nl,
     member(C, Cs), rvc((Row,Val), [C]), propagate.

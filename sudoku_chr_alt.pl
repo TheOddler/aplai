@@ -143,7 +143,7 @@ stop_combine @ stop_combine, combine <=> true.
 
 % Constraints
 no_double_booking @ propagate,
-    rvc((Row,ValA),[Col]), rvc((Row,ValB),[Col])
+    rvc((Row,ValA),[Col]), rvc((Row,ValB),[Col]) # passive
     <=> ValA \= ValB | false.
 alldifferent_in_row @ propagate,
 	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB]) # passive

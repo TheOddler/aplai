@@ -10,19 +10,11 @@
 
 % Define types
 :- chr_type list(T) ---> [] ; [T | list(T)].
-:- chr_type c ---> c(natural, natural).    % x and y coordinates
+:- chr_type c ---> c(natural, natural).   % x and y coordinates
 :- chr_type s ---> s(natural, natural).   % height x width
-%:- chr_type rect ---> (natural, c, s)
-%:- chr_type val ---> [] ; [natural | list(natural)]. % Value or list of possible values
 
 % Define constraints
-%:- chr_constraint c(+natural, +natural).
-%:- chr_constraint s(+natural, +natural).
 :- chr_constraint rect(+c, +c, +s).
-%:- chr_constraint contains_point(+c, +s, +natural, +natural).
-%:- chr_constraint has_area(+s, +natural).
-%:- chr_constraint inside_grid(+c, +s, +natural, +natural).
-%:- chr_constraint search(+natural).
 :- chr_constraint cleanup.
 
 /*
@@ -44,45 +36,32 @@ solve(Name) :-
     once(time(solve(GridW, GridH, Hints))),
 
     %format('Runtime: ~`.t ~2f~34|  Backtracks: ~`.t ~D~72|~n', [RunT, BackT]),
-	show(GridW, GridH, Hints, chr, ascii),
-    %write_solution(GridW, GridH, Hints),
+	show(GridW, GridH, Hints, chr, ascii).
     cleanup.
 
 solve(_, _, []) :- !.
 solve(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
 	findall((Pos, Size),
 			(
-			/*range(GWrange, 1, GridW),
-			range(GHrange, 1, GridH),
-			member(XX, GWrange),
-			member(YY, GHrange),
-			member(W, GWrange),
-			member(H, GHrange),*/
 			inside_grid(Pos, Size, GridW, GridH),
 			has_area(Size, Area),
 			contains_point(c(X,Y), Pos, Size)
 			), Possibble_rectangles),
-	write(Possibble_rectangles),nl,
 	member((Pos, Size), Possibble_rectangles),
 	rect(c(X,Y), Pos, Size),
 	solve(GridW, GridH, OtherHints).
-/*
-create_rectangles(_, []) :- !.
-create_rectangles(Point, [(c(X,Y), s(W,H))|Other]) :-
-	rect(Point, c(X,Y), s(W,H)),
-	create_rectangles(Point, Other).
-*/
+
 /*
  * Utils
  */
-
+% Point inside the box
 contains_point(c(Px,Py), c(X,Y), s(W,H)) :-
 	Px >= X,
 	Py >= Y,
 	Px < X + W,
 	Py < Y + H.
 
-
+% Coordinates inside the grid
 inside_grid(c(X,Y), s(W,H), GridW, GridH):-
 	range(GWrange, 1, GridW),
 	range(GHrange, 1, GridH),
@@ -93,12 +72,13 @@ inside_grid(c(X,Y), s(W,H), GridW, GridH):-
 	X + W =< GridW + 1,
 	Y + H =< GridH + 1.
 
+% Area of box
 has_area(s(W,H), Area) :-
 	Area is W * H.
 
 % get array with range Low to High
 range([X], X, X).
-range(Out, Low, High) :- findall(X, between(Low, High, X), Out).
+range([Low|Out],Low,High) :- NewLow is Low+1, NewLow =< High, range(Out, NewLow, High).
 
 %write_solution(_) :-
 %	show(BoardW, BoardH, Hints, chr, unicode).
@@ -121,28 +101,15 @@ has_area(s(W,H), Area)
 	<=> Area is W * H |true.
 */
 
-
-
-% Constraints
 /*
-no_overlap @ rect(_,c(X1,_),s(W1,_)), rect(_,c(X2,_),_) # passive
-	<=> X1 + W1 =< X2 | false.
-no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
-	<=> X2 + W2 =< X1 | false.
-no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
-	<=> Y1 + H1 =< Y2 | false.
-no_overlap @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
-	<=> Y2 + H2 =< Y1 | false.
-*/
+ * Constraints
+ */
+no_overlap_rule @ rect(P1,c(X1,Y1),s(W1,H1)), rect(P2,c(X2,Y2),s(W2,H2)) #passive
+	<=> P1\=P2, \+no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) | false.
 
-no_overlap @ rect(_,c(X1,_), s(W1,_)), rect(_,c(X2,_), _) # passive
-	<=> X1 + W1 =< X2 | false.
-no_overlap @ rect(_,c(X1,_), _), rect(_,c(X2,_), s(W2,_)) # passive
-	<=> X2 + W2 =< X1 | false.
-no_overlap @ rect(_,c(_,Y1), s(_,H1)), rect(_,c(_,Y2), _) # passive
-	<=> Y1 + H1 =< Y2 | false.
-no_overlap @ rect(_,c(_,Y1), _), rect(_,c(_,Y2), s(_,H2)) # passive
-	<=> Y2 + H2 =< Y1 | false.
+no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) :-
+	(X1 + W1 =< X2 ; X2 + W2 =< X1) ;
+	(Y1 + H1 =< Y2 ; Y2 + H2 =< Y1).
 
 cleanup \ rect(_, _, _) <=> true.
 cleanup <=> true.

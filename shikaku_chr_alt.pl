@@ -9,14 +9,16 @@
 :- chr_type list(T) ---> [] ; [T | list(T)].
 :- chr_type c ---> c(natural, natural).   % x and y coordinates
 :- chr_type s ---> s(natural, natural).   % height x width
-:- chr_type val ---> (c,s).
+%:- chr_type val ---> (natural, natural, natural, natural).
 
-:- chr_constraint rect(+c, ?list(val)).
-:- chr_constraint rect(+c, +c, +s).
+%:- chr_constraint rect(+c, ?list(val)).
+%:- chr_constraint rect(+c, +natural, +natural, +natural, +natural).
+%:- chr_constraint rect(+c, +c, +s).
+:- chr_constraint rect/2, rect/3, rect/5.
 :- chr_constraint propagate, cleanup.
 
-% Simple Shikaku Solution where each rect is repesented as
-% X,Y coordinates, and Width, Height variables.
+% Shikaku Solution where each rect is repesented as Top, Left, Bottom and Right coordinate variables.
+% Works surprisingly slower
 
 % Solve all puzzles
 solve_all :-
@@ -29,11 +31,24 @@ solve(Name) :-
 	problem(Name, GridW, GridH, Hints),  % get the puzzle
     write('Solving: '), write(Name), nl, % Feedback puzzle name
 
+    length(Hints, Nbr_of_hints),
+	b_setval(to_find_nbr, Nbr_of_hints),
+
 	% Solve puzzle + feedback stats
     once(time(solve(GridW, GridH, Hints))),
 
+	% Change format for prints
+	findall(rect(A,B,C),
+		(
+		find_chr_constraint(rect(A,Top,Left,Bottom,Right)),
+		B = c(Left, Top),
+		W is Right - Left + 1,
+		H is Bottom - Top + 1,
+		C = s(W,H)
+		), Rectangles),
+
     %format('Runtime: ~`.t ~2f~34|  Backtracks: ~`.t ~D~72|~n', [RunT, BackT]),
-	show(GridW, GridH, Hints, chr, ascii),
+	show(GridW, GridH, Hints, Rectangles, ascii),
     cleanup.
 
 solve(GridW, GridH, Hints) :-
@@ -42,11 +57,12 @@ solve(GridW, GridH, Hints) :-
 
 create_rects(_, _, []) :- !.
 create_rects(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
-	findall((Pos, Size),
+	findall((Top, Left, Bottom, Right),
 			(
-			inside_grid(Pos, Size, GridW, GridH),
-			has_area(Size, Area),
-			contains_point(c(X,Y), Pos, Size)
+			inside_grid(Top, Left, Bottom, Right, GridW, GridH),
+			has_area(Top, Left, Bottom, Right, Area),
+			contains_point(Top, Left, Bottom, Right, X, Y),
+			doesnt_contain_hints(Top, Left, Bottom, Right, OtherHints)
 			), Possibble_rectangles),
 	rect(c(X,Y), Possibble_rectangles),
 	create_rects(GridW, GridH, OtherHints).
@@ -54,30 +70,33 @@ create_rects(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
 /*
  * Utils
  */
-/*doesnt_contains_points(_, _, []).
-doesnt_contains_points(Pos, Size, [(X,Y,_)|OtherHints]) :-
-	contains_point(c(X,Y), Pos, Size) ->
+doesnt_contain_hints(_, _, _, _, []).
+doesnt_contain_hints(Top, Left, Bottom, Right, [(X,Y,_)|OtherHints]) :-
+	contains_point(Top, Left, Bottom, Right, X, Y) ->
 		false ;
-		doesnt_contains_points(Pos, Size, OtherHints).
-*/
-contains_point(c(Px,Py), c(X,Y), s(W,H)) :-
-	Px >= X,
-	Py >= Y,
-	Px < X + W,
-	Py < Y + H.
+		doesnt_contain_hints(Top, Left, Bottom, Right, OtherHints).
 
-inside_grid(c(X,Y), s(W,H), GridW, GridH):-
+ % Contains point
+contains_point(Top, Left, Bottom, Right, X, Y) :-
+	X >= Left,
+	X =< Right,
+	Y >= Top,
+	Y =< Bottom.
+
+% Rects are inside the grid
+inside_grid(Top, Left, Bottom, Right, GridW, GridH):-
 	range(GWrange, 1, GridW),
 	range(GHrange, 1, GridH),
-	member(X, GWrange),
-	member(Y, GHrange),
-	member(W, GWrange),
-	member(H, GHrange),
-	X + W =< GridW + 1,
-	Y + H =< GridH + 1.
+	member(Top, GHrange),
+	member(Left, GWrange),
+	member(Bottom, GHrange),
+	member(Right, GWrange).
 
-has_area(s(W,H), Area) :-
-	Area is W * H.
+% Rects need to be a certain area
+has_area(Top, Left, Bottom, Right, Area) :-
+	Height is Bottom - Top + 1,
+	Width is Right - Left + 1,
+	Area is Height * Width.
 
 % get array with range Low to High
 range([X], X, X).
@@ -91,21 +110,21 @@ range([Low|Out],Low,High) :- NewLow is Low+1, NewLow =< High, range(Out, NewLow,
 rect(_,[]) ==> fail.
 
 % The last one of a list gets automatically selected
-last_of_list @ propagate, rect(Point,[(c(X1,Y1),s(W1,H1))]) #passive
-	<=> rect(Point,c(X1,Y1),s(W1,H1)).
+last_of_list @ propagate, rect(Point,[(T, L, B, R)]) #passive
+	<=> rect(Point, T, L, B, R).
 
 % If overlap between rectangles, false
-no_overlap_rule @ rect(P1,c(X1,Y1),s(W1,H1)), rect(P2,c(X2,Y2),s(W2,H2)) # passive
-	<=> P1\=P2, \+no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) | false.
+no_overlap_rule @ rect(P1, T1, L1, B1, R1), rect(P2, T2, L2, B2, R2) # passive
+	<=> P1\=P2, \+no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) | false.
 
-no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) :-
-	(X1 + W1 =< X2 ; X2 + W2 =< X1) ;
-	(Y1 + H1 =< Y2 ; Y2 + H2 =< Y1).
+no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) :-
+	(R1 < L2 ; R2 < L1) ;
+	(B1 < T2 ; B2 < T1).
 
-% remove suggestions with the same dimentions
+/*% remove suggestions with the same dimentions
 no_doubles @ rect(_, Cor, Size) \ rect(P2,Pos) #passive
     <=> select((Cor, Size), Pos, NewPos) | rect(P2,NewPos).
-
+*/
 /*
 no_overlap_rule @ rect(P1,Pos,Size), rect(P1,Pos2,Size2)  #passive
 	<=> (Pos\=Pos2;Size\=Size2) | fail.
@@ -114,19 +133,19 @@ no_overlap_rule @ rect(P1,Pos,Size), rect(P1,Pos2,Size2)  #passive
 /*
 % Drastically speeds up some, strongly slows down others
 % Removes overlapping in suggestions list
-remove_overlapping @ propagate, rect(P1, Cor, Size) \ rect(P2,Pos) #passive
+remove_overlapping @ propagate, rect(P1, T, L, B, R) \ rect(P2,Pos) #passive
     <=> P1 \= P2,
-        overlap(Cor, Size, Pos, Overlap),
+        overlap(T, L, B, R, Pos, Overlap),
 		select(Overlap, Pos, NewPos) | rect(P2,NewPos).
 
 overlap(_,_,[],_) :- false.
-overlap(c(X1,Y1), s(W1,H1), [(c(X2,Y2), s(W2,H2)) | Rest], Return) :-
+overlap(T1, L1, B1, R1, [(T2, L2, B2, R2) | Rest], Return) :-
 	% If there is no overlap
-    no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) ->
-    overlap(c(X1,Y1), s(W1,H1), Rest, Return)
+    no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) ->
+    overlap(T1, L1, B1, R1, Rest, Return)
         ;
     % if there is an overlap, return the whole list without the overlap
-    Return = (c(X2,Y2), s(W2,H2)).
+    Return = (T2, L2, B2, R2).
 */
 /*
 % Alternative implementation for remove_overlapping
@@ -149,8 +168,9 @@ select_no_overlap(c(X1,Y1), s(W1,H1), [(c(X2,Y2), s(W2,H2)) | Rest], Checked, Re
 % Guess a possible combination
 propagate, rect(Point, Possible) #passive
     <=>
-    member((Cor, Size),Possible), rect(Point,Cor,Size), propagate.
+    member((T, L, B, R),Possible), rect(Point,T, L, B, R), propagate.
 
 cleanup \ rect(_, _) <=> true.
 cleanup \ rect(_, _, _) <=> true.
+cleanup \ rect(_, _, _, _, _) <=> true.
 cleanup <=> true.

@@ -256,18 +256,17 @@ eliminate_in_col @ propagate,
 	rvc((RowA,Val),[ColA]), rvc((RowB,Val),[_,_|_])
 	==> RowA \= RowB
     | remove_rcv(RowB,ColA,Val).
-%eliminate_in_box @ propagate,
+eliminate_in_box @ propagate,
 	% two same values, one has exact col and row, the other only row
 	% check for the other all the cols that would put it in the same box
 	% remove these collumns from it's possible cols
-%	rvc((RowA,Val),[ColA]), rvc((RowB,Val),[C1,C2|Cs])
-%	==> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-%		SameBoxCols = [_|_] %at least one same col
-%   | remove_rcv_all(RowB, SameBoxCols, Val).
-remove_rcv_all([]).
-remove_rcv_all(Row, [Col|Rest], Value) :-
-    remove_rcv(Row,Col,Value),
-    remove_rcv_all(Row,Rest,Value).
+	rvc((RowA,Val),[ColA]) \ rvc((RowB,Val),[C1,C2|Cs])
+	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+		SameBoxCols = [_|_], %at least one same col
+        subtract([C1,C2|Cs], SameBoxCols, NewCs)
+    | ( NewCs = [] -> false
+    ; NewCs = [SingleCol] -> rvc((RowB,Val),NewCs), fix_rcv(RowB,SingleCol,Val)
+    ; rvc((RowB,Val),NewCs) ).
 
 propagate <=> search(2).
 

@@ -67,7 +67,7 @@ solve(Board, Width) :-
     create_grid_unknown(Board, 1, Width),
     stop_combine,
     create_grid_known(Board, 1, Width),
-    chr_show_store(chr_sudoku_alt), nl, %for debugging
+    %chr_show_store(chr_sudoku_alt), nl, %for debugging
     % Start search
     propagate.
 
@@ -168,19 +168,24 @@ combine_rvcs @ combine \ rvc((Row,Val), ColsA), rvc((Row,Val), ColsB) # passive
 stop_combine @ stop_combine, combine <=> true.
 
 % Channeling stuff
-fix_values @ propagate,
+fix_values @ %propagate,
     fix_rcv(Row,Col,Val),
-    cell((Row,Col), _) # passive, rvc((Row,Val),_) # passive
+    cell((Row,Col), _), rvc((Row,Val),_)
     <=> cell((Row,Col), [Val]), rvc((Row,Val),[Col]).
+fix_rcv(Row,Col,Val)
+    <=> write(('No fix', Row, Col, Val)), nl,
+    chr_show_store(chr_sudoku_alt), nl,
+    break,
+    true.
 
 remove_when_two @ propagate,
     remove_rcv(Row,Col,Val) \ cell((Row,Col),[V1,V2]) # passive
     <=> select(Val, [V1,V2], [NewVal])
-    | fix_rcv(Row,Col,NewVal).
+    | cell((Row,Col),[NewVal]), fix_rcv(Row,Col,NewVal).
 remove_when_two @ propagate,
     remove_rcv(Row,Col,Val) \ rvc((Row,Val),[C1,C2]) # passive
     <=> select(Col, [C1,C2], [NewCol])
-    | fix_rcv(Row,NewCol,Val).
+    | rvc((Row,Val),[NewCol]), fix_rcv(Row,NewCol,Val).
 
 remove @ propagate,
     remove_rcv(Row,Col,Val) \ cell((Row,Col),Values) # passive
@@ -189,76 +194,76 @@ remove @ propagate,
 remove @ propagate,
     remove_rcv(Row,Col,Val) \ rvc((Row,Val),Cols) # passive
     <=> select(Col,Cols,NewCols)
-    | cell((Row,Val),NewCols).
+    | rvc((Row,Val),NewCols).
 remove_rcv(_,_,_) <=> true.
 
 % Check empty
-check_empty @ propagate, rvc((_,_),[]) <=> write('1'), nl, false.
-%check_empty @ propagate, cell((_,_),[]) <=> write('2'), nl, false.
-check_empty @ propagate, cell((R,C),[]) <=> write((2, R-C)), nl, false.
+check_empty @ propagate, rvc((_,_),[]) <=> false.
+check_empty @ propagate, cell((_,_),[]) <=> false.
 
 % Simple Constraints
 alldifferent_in_row @ propagate,
     cell((Row, ColA), [Value]), cell((Row,ColB), [Value]) # passive
-    <=> ColA \= ColB | write('3'), nl, false.
+    <=> ColA \= ColB
+    | false.
 alldifferent_in_column @ propagate,
     cell((RowA, Col), [Value]), cell((RowB,Col), [Value]) # passive
-    <=> RowA \= RowB | write('4'), nl, false.
+    <=> RowA \= RowB
+    | false.
 alldifferent_in_box @ propagate,
     cell((Row,Col), [Value]), cell((ORow,OCol), [Value]) # passive
-    <=> (Row \= ORow ; Col \= OCol), same_box(Row, Col, ORow, OCol) | write('4'), nl, false.
+    <=> (Row \= ORow ; Col \= OCol), same_box(Row, Col, ORow, OCol)
+    | false.
 
 % Alternative Constraints
 no_double_booking @ propagate,
     rvc((Row,ValA),[Col]), rvc((Row,ValB),[Col]) # passive
-    <=> ValA \= ValB | write('5'), nl, false.
+    <=> ValA \= ValB
+    | false.
 alldifferent_in_row @ propagate,
 	rvc((Row,Value),[ColA]), rvc((Row,Value),[ColB]) # passive
-	<=> ColA \= ColB | write('6'), nl, false.
+	<=> ColA \= ColB
+    | false.
 alldifferent_in_col @ propagate,
 	rvc((RowA,Value),[Col]), rvc((RowB,Value),[Col]) # passive
-	<=> RowA \= RowB | write('7'), nl, false.
+	<=> RowA \= RowB
+    | false.
 alldifferent_in_box @ propagate,
 	rvc((RowA,Value),[ColA]), rvc((RowB,Value),[ColB]) # passive
 	<=> (RowA \= RowB ; ColA \= ColB), same_box(RowA,ColA,RowB,ColB)
-	| write('8'), nl, false.
+	| false.
 
 % Simple Eliminate
 eliminate_in_row @ propagate,
-    cell((Row,C), [Value]), cell((Row,Col), [_, _ | _])
-    ==> C \= Col
-    | write((9, Row-Col-Value)), nl, %chr_show_store(chr_sudoku_alt), nl,
-    remove_rcv(Row, Col, Value).
+    cell((Row,_), [Value]), cell((Row,Col), [_,_|_])
+    ==> remove_rcv(Row, Col, Value).
 eliminate_in_column @ propagate,
-    cell((R,Col), [Value]), cell((Row,Col), [_, _ | _])
-    ==> R \= Row
-    | write((10, Row-Col-Value)), nl, %chr_show_store(chr_sudoku_alt), nl,
-    remove_rcv(Row,Col, Value).
+    cell((_,Col), [Value]), cell((Row,Col), [_,_|_])
+    ==> remove_rcv(Row,Col, Value).
 eliminate_in_box @ propagate,
-    cell((Row,Col), [Value]), cell((ORow,OCol), [_, _ | _])
-    ==> (Row \= ORow ; Col \= OCol), same_box(Row, Col, ORow, OCol)
-    | write('11'), nl,
-    remove_rcv(ORow,OCol, Value).
+    cell((RowA,ColA), [Value]), cell((RowB,ColB), [_, _ | _])
+    ==> (RowA \= RowB ; ColA \= ColB), same_box(RowA, ColA, RowB, ColB)
+    | remove_rcv(RowB, ColB, Value).
 
 % Alternative Eliminate
 eliminate_in_row @ propagate,
 	%same row, different values, one has exact col, eliminate that col from the other
 	rvc((Row,ValA),[ColA]), rvc((Row,ValB),[_,_|_])
 	==> ValA \= ValB
-    | write('12'), nl, remove_rcv(Row,ColA,ValB).
+    | remove_rcv(Row,ColA,ValB).
 eliminate_in_col @ propagate,
 	%different row, same value, one has exact col, eliminate that col from the other
 	rvc((RowA,Val),[ColA]), rvc((RowB,Val),[_,_|_])
 	==> RowA \= RowB
-    | write('13'), nl, remove_rcv(RowB,ColA,Val).
-eliminate_in_box @ propagate,
+    | remove_rcv(RowB,ColA,Val).
+%eliminate_in_box @ propagate,
 	% two same values, one has exact col and row, the other only row
 	% check for the other all the cols that would put it in the same box
 	% remove these collumns from it's possible cols
-	rvc((RowA,Val),[ColA]), rvc((RowB,Val),[C1,C2|Cs])
-	<=> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
-		SameBoxCols = [_|_] %at least one same col
-        | write('14'), nl, remove_rcv_all(RowB, SameBoxCols, Val).
+%	rvc((RowA,Val),[ColA]), rvc((RowB,Val),[C1,C2|Cs])
+%	==> same_box_cols(RowA,ColA,RowB,[C1,C2|Cs],SameBoxCols),
+%		SameBoxCols = [_|_] %at least one same col
+%   | remove_rcv_all(RowB, SameBoxCols, Val).
 remove_rcv_all([]).
 remove_rcv_all(Row, [Col|Rest], Value) :-
     remove_rcv(Row,Col,Value),
@@ -266,15 +271,13 @@ remove_rcv_all(Row, [Col|Rest], Value) :-
 
 propagate <=> search(2).
 
-first_fail @ search(N), cell((Row,Col), Vs) # passive
+first_fail @ cell((Row,Col), Vs) # passive \ search(N)
     <=> length(Vs, N)
-    | write('Search Cell: '), write(N), write(','), write(((Row,Col), Vs)), nl, %chr_show_store(chr_sudoku_alt), nl,
-    member(V, Vs), fix_rcv(Row,Col,V), propagate.
+    | member(V, Vs), fix_rcv(Row,Col,V), propagate.
 
-first_fail @ search(N), rvc((Row,Val), Cs) # passive
+first_fail @ rvc((Row,Val), Cs) # passive \ search(N)
 	<=> length(Cs, N)
-    | write('Search RVC: '), write(N), write(','), write(((Row,Val), Cs)), nl, %chr_show_store(chr_sudoku_alt), nl,
-    member(C, Cs), fix_rcv(Row,C,Val), propagate.
+    | member(C, Cs), fix_rcv(Row,C,Val), propagate.
 
 search(N) <=> nb_getval(width, Width), N == Width | true.
 search(N) <=> NN is N + 1, search(NN).

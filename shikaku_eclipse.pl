@@ -23,35 +23,27 @@ solve(Name) :-
 	% Choice methods:
 	% indomain/1, indomain_max, indomain_min, indomain_reverse_min Like, indomain_reverse_max,
     % indomain_middle, indomain_median, indomain_split, indomain_reverse_split, indomain_random, indomain_interval
-	time(solve(GridW, GridH, Hints, Solution, smallest, indomain, complete, [backtrack(B)])),
+	time(solve(GridW, GridH, Hints, Solution, occurrence, indomain_reverse_split, complete, [backtrack(B)])),
 
 	write("Required "), write(B), write(" backtracks"), nl,
 
 	% write final result
 	show(GridW, GridH, Hints, Solution, ascii).
-%	write_solution(Solution).
-
-write_solution(Solution) :-
-	write("Solution = ["), nl,
-	( foreach(Rect, Solution)
-	do
-		write("\t"), write(Rect), write(",") , nl
-	),
-	write("]"), nl, nl.
 
 solve(GridW, GridH, Hints, Solution, Select, Choice, Method, Option) :-
 	% Create constraints
 	( foreach((X,Y,Area), Hints),
 	  foreach(Rect, Solution), %will be filled
-	  param(GridW), param(GridH)
+	  param(GridW), param(GridH), param(Hints)
 	do
-		Pos = c(_,_),
-		Size = s(_,_),
 		Rect = rect(c(X,Y), Pos, Size),
-
 		has_area(Size, Area),
 		contains_point(Pos, Size, X, Y),
-		inside_grid(Pos, Size, GridW, GridH)
+		inside_grid(Pos, Size, GridW, GridH),
+
+		% extra constraint
+		subtract(Hints, [(X,Y,Area)], OtherHints),
+		doesnt_contain_hints(Pos, Size, OtherHints)
 	),
 	no_overlap(Solution),
 	term_variables(Solution, Vars),
@@ -75,6 +67,16 @@ contains_point(c(X,Y), s(W,H), PX, PY) :-
 	PY #>= Y,
 	PX #< X + W,
 	PY #< Y + H.
+
+doesnt_contain_hints(c(X,Y), s(W,H), Hints) :-
+	( foreach((PX,PY,_), Hints),
+	  param(X), param(Y), param(W), param(H)
+	do
+		PX #< X or
+		PY #< Y or
+		PX #>= X + W or
+		PY #>= Y + H
+	).
 
 % No-overlap
 no_overlap(Rects) :-

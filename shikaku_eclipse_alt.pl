@@ -30,6 +30,8 @@ solve(Name) :-
 	% write final result
 	write_solution(GridW, GridH, Hints, Solution).
 
+% Reform to right format according to the print function from toledo
+% This format dictates rect(_, c(X,Y),s(H,W)) for all rectangles
 write_solution(GridW, GridH, Hints, Solution) :-
 	% Transform view to uniform with the school shikaku print
 	( foreach(rect(Id, Top, Left, Bottom, Right), Solution),
@@ -42,20 +44,6 @@ write_solution(GridW, GridH, Hints, Solution) :-
 		Rect = rect(Id,C,S)
 	),
 	show(GridW, GridH, Hints, SolutionAlt, ascii).
-
-/*
-write_solution(Solution) :-
-	write("Solution = ["), nl,
-	( foreach(rect(Id, Top, Left, Bottom, Right), Solution)
-	do
-		C = c(Left, Top),
-		W is Right - Left + 1,
-		H is Bottom - Top + 1,
-		S = s(W,H),
-		write("\t"), write(rect(Id,C,S)), write(",") , nl
-	),
-	write("]"), nl, nl.
-*/
 
 solve(GridW, GridH, Hints, Solution, Select, Choice, Method, Option) :-
 	% Create constraints

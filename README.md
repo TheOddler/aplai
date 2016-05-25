@@ -16,5 +16,7 @@ Amazing solution for the Advanced Programming Languages for Artificial Intellige
 * E-learning: http://4c.ucc.ie/~hsimonis/ELearning/index.htm
 * Other people with old assignment: https://github.com/toonn/aplai
 * CHR info: https://sicstus.sics.se/sicstus/docs/3.7.1/html/sicstus_34.html
+* ECLiPSe search parameters explained: http://eclipseclp.org/doc/bips/lib/ic/search-6.html
+* Stackoverflow vraag van de Koning: http://stackoverflow.com/questions/36356702/profiling-eclipse-clp
 
 (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

@@ -11,6 +11,7 @@ Amazing solution for the Advanced Programming Languages for Artificial Intellige
 
 
 ##Useful sources
+* Drive Excel documents: https://drive.google.com/folderview?id=0B2fq4uwDTe99SjhGVTF6SGwyLVU&usp=sharing
 * Code samples: http://www.eclipseclp.org/examples/
 * E-learning: http://4c.ucc.ie/~hsimonis/ELearning/index.htm
 * Other people with old assignment: https://github.com/toonn/aplai

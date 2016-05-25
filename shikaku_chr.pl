@@ -37,29 +37,31 @@ solve(Name) :-
     cleanup.
 
 solve(GridW, GridH, Hints) :-
-    create_rects(GridW, GridH, Hints),
+    create_rects(GridW, GridH, Hints, Hints),
     propagate.
 
-create_rects(_, _, []) :- !.
-create_rects(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
+create_rects(_, _, [], _) :- !.
+create_rects(GridW, GridH, [(X,Y,Area) | OtherHints], Hints) :-
 	findall((Pos, Size),
 			(
 			inside_grid(Pos, Size, GridW, GridH),
 			has_area(Size, Area),
-			contains_point(c(X,Y), Pos, Size)
+			contains_point(c(X,Y), Pos, Size),
+			select((X,Y,Area), Hints, Hints2),
+			doesnt_contains_points(Pos,Size, Hints2)
 			), Possibble_rectangles),
 	rect(c(X,Y), Possibble_rectangles),
-	create_rects(GridW, GridH, OtherHints).
+	create_rects(GridW, GridH, OtherHints, Hints).
 
 /*
  * Utils
  */
-/*doesnt_contains_points(_, _, []).
+doesnt_contains_points(_, _, []).
 doesnt_contains_points(Pos, Size, [(X,Y,_)|OtherHints]) :-
 	contains_point(c(X,Y), Pos, Size) ->
 		false ;
 		doesnt_contains_points(Pos, Size, OtherHints).
-*/
+
 contains_point(c(Px,Py), c(X,Y), s(W,H)) :-
 	Px >= X,
 	Py >= Y,
@@ -91,31 +93,22 @@ range([Low|Out],Low,High) :- NewLow is Low+1, NewLow =< High, range(Out, NewLow,
 rect(_,[]) ==> fail.
 
 % The last one of a list gets automatically selected
-last_of_list @ propagate, rect(Point,[(c(X1,Y1),s(W1,H1))]) #passive
+last_of_list @ rect(Point,[(c(X1,Y1),s(W1,H1))])
 	<=> rect(Point,c(X1,Y1),s(W1,H1)).
 
 % If overlap between rectangles, false
-no_overlap_rule @ rect(P1,c(X1,Y1),s(W1,H1)), rect(P2,c(X2,Y2),s(W2,H2)) # passive
-	<=> P1\=P2, \+no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) | false.
+no_overlap_rule @ rect(_,c(X1,Y1),s(W1,H1)), rect(_,c(X2,Y2),s(W2,H2)) # passive
+	<=> \+no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) | false.
 
 no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) :-
 	(X1 + W1 =< X2 ; X2 + W2 =< X1) ;
 	(Y1 + H1 =< Y2 ; Y2 + H2 =< Y1).
 
-% remove suggestions with the same dimentions
-no_doubles @ rect(_, Cor, Size) \ rect(P2,Pos) #passive
-    <=> select((Cor, Size), Pos, NewPos) | rect(P2,NewPos).
 
-/*
-no_overlap_rule @ rect(P1,Pos,Size), rect(P1,Pos2,Size2)  #passive
-	<=> (Pos\=Pos2;Size\=Size2) | fail.
-*/
-
-/*
 % Drastically speeds up some, strongly slows down others
 % Removes overlapping in suggestions list
-remove_overlapping @ propagate, rect(P1, Cor, Size) \ rect(P2,Pos) #passive
-    <=> P1 \= P2,
+remove_overlapping @ rect(_, Cor, Size) \ rect(P2,Pos)
+    <=>
         overlap(Cor, Size, Pos, Overlap),
 		select(Overlap, Pos, NewPos) | rect(P2,NewPos).
 
@@ -127,24 +120,7 @@ overlap(c(X1,Y1), s(W1,H1), [(c(X2,Y2), s(W2,H2)) | Rest], Return) :-
         ;
     % if there is an overlap, return the whole list without the overlap
     Return = (c(X2,Y2), s(W2,H2)).
-*/
-/*
-% Alternative implementation for remove_overlapping
-remove_overlapping @ propagate, rect(P1, Cor, Size) \ rect(P2,Pos)
-    <=> P1 \= P2,
-        select_no_overlap(Cor, Size, Pos, [], NewPos) | rect(P2,NewPos).
 
-%select_no_overlap(Pos, Size, List, NewList) :-
-%    select_no_overlap(Pos, Size, List, [], NewList).
-select_no_overlap(_,_,[],_,_) :- false.
-select_no_overlap(c(X1,Y1), s(W1,H1), [(c(X2,Y2), s(W2,H2)) | Rest], Checked, Return) :-
-    % If there is no overlap
-    no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) ->
-    select_no_overlap(c(X1,Y1), s(W1,H1), Rest, [(c(X2,Y2), s(W2,H2))| Checked], Return)
-        ;
-    % if there is an overlap, return the whole list without the overlap
-    append(Rest, Checked, Return).
-*/
 
 % Guess a possible combination
 propagate, rect(Point, Possible) #passive

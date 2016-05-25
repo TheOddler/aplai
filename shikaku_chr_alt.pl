@@ -18,7 +18,6 @@
 :- chr_constraint propagate, cleanup.
 
 % Shikaku Solution where each rect is repesented as Top, Left, Bottom and Right coordinate variables.
-% Works surprisingly slower
 
 % Solve all puzzles
 solve_all :-
@@ -52,20 +51,23 @@ solve(Name) :-
     cleanup.
 
 solve(GridW, GridH, Hints) :-
-    create_rects(GridW, GridH, Hints),
+    create_rects(GridW, GridH, Hints, Hints),
     propagate.
 
-create_rects(_, _, []) :- !.
-create_rects(GridW, GridH, [(X,Y,Area) | OtherHints]) :-
+create_rects(_, _, [], _) :- !.
+create_rects(GridW, GridH, [(X,Y,Area) | OtherHints], Hints) :-
 	findall((Top, Left, Bottom, Right),
 			(
 			inside_grid(Top, Left, Bottom, Right, GridW, GridH),
+			Top =< Bottom,
+			Left =< Right,
 			has_area(Top, Left, Bottom, Right, Area),
 			contains_point(Top, Left, Bottom, Right, X, Y),
-			doesnt_contain_hints(Top, Left, Bottom, Right, OtherHints)
+			select((X,Y,Area), Hints, HintsWithoutCurrent),
+			doesnt_contain_hints(Top, Left, Bottom, Right, HintsWithoutCurrent)
 			), Possibble_rectangles),
 	rect(c(X,Y), Possibble_rectangles),
-	create_rects(GridW, GridH, OtherHints).
+	create_rects(GridW, GridH, OtherHints, Hints).
 
 /*
  * Utils
@@ -110,35 +112,25 @@ range([Low|Out],Low,High) :- NewLow is Low+1, NewLow =< High, range(Out, NewLow,
 rect(_,[]) ==> fail.
 
 % The last one of a list gets automatically selected
-last_of_list @ propagate, rect(Point,[(T, L, B, R)]) #passive
+last_of_list @ rect(Point,[(T, L, B, R)])
 	<=> rect(Point, T, L, B, R).
 
 % If overlap between rectangles, false
-no_overlap_rule @ rect(P1, T1, L1, B1, R1), rect(P2, T2, L2, B2, R2) # passive
-	<=> P1\=P2, \+no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) | false.
+no_overlap_rule @ rect(_, T1, L1, B1, R1), rect(_, T2, L2, B2, R2) #passive
+	<=> \+no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) | false.
 
 no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) :-
 	(R1 < L2 ; R2 < L1) ;
 	(B1 < T2 ; B2 < T1).
 
-/*% remove suggestions with the same dimentions
-no_doubles @ rect(_, Cor, Size) \ rect(P2,Pos) #passive
-    <=> select((Cor, Size), Pos, NewPos) | rect(P2,NewPos).
-*/
-/*
-no_overlap_rule @ rect(P1,Pos,Size), rect(P1,Pos2,Size2)  #passive
-	<=> (Pos\=Pos2;Size\=Size2) | fail.
-*/
-
-/*
 % Drastically speeds up some, strongly slows down others
 % Removes overlapping in suggestions list
-remove_overlapping @ propagate, rect(P1, T, L, B, R) \ rect(P2,Pos) #passive
-    <=> P1 \= P2,
+remove_overlapping @ rect(_, T, L, B, R) \ rect(P2,Pos)
+    <=>
         overlap(T, L, B, R, Pos, Overlap),
 		select(Overlap, Pos, NewPos) | rect(P2,NewPos).
 
-overlap(_,_,[],_) :- false.
+overlap(_,_,_,_,[],_) :- false.
 overlap(T1, L1, B1, R1, [(T2, L2, B2, R2) | Rest], Return) :-
 	% If there is no overlap
     no_overlap(T1, L1, B1, R1, T2, L2, B2, R2) ->
@@ -146,24 +138,6 @@ overlap(T1, L1, B1, R1, [(T2, L2, B2, R2) | Rest], Return) :-
         ;
     % if there is an overlap, return the whole list without the overlap
     Return = (T2, L2, B2, R2).
-*/
-/*
-% Alternative implementation for remove_overlapping
-remove_overlapping @ propagate, rect(P1, Cor, Size) \ rect(P2,Pos)
-    <=> P1 \= P2,
-        select_no_overlap(Cor, Size, Pos, [], NewPos) | rect(P2,NewPos).
-
-%select_no_overlap(Pos, Size, List, NewList) :-
-%    select_no_overlap(Pos, Size, List, [], NewList).
-select_no_overlap(_,_,[],_,_) :- false.
-select_no_overlap(c(X1,Y1), s(W1,H1), [(c(X2,Y2), s(W2,H2)) | Rest], Checked, Return) :-
-    % If there is no overlap
-    no_overlap(c(X1,Y1), s(W1,H1), c(X2,Y2), s(W2,H2)) ->
-    select_no_overlap(c(X1,Y1), s(W1,H1), Rest, [(c(X2,Y2), s(W2,H2))| Checked], Return)
-        ;
-    % if there is an overlap, return the whole list without the overlap
-    append(Rest, Checked, Return).
-*/
 
 % Guess a possible combination
 propagate, rect(Point, Possible) #passive

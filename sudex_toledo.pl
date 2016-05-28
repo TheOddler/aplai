@@ -383,7 +383,14 @@ sudoku_25x25(P) :- P = [
     [ _,15,14, _, _,   _, 6, _,16, _,  11,20, _, _, _,   _,19, _,24, _,   _,23, 4, 3,25],
     [19, _, _, 2, 3,  12, _,15,23, _,   7,17, _, _, 5,   _, _, _,14, _,   _, _, _,11,10]].
 
-/* console script to get string of sudoku of planetsudoku:
+/*
+ * JavaScript code to easily get the sudoku in the right format
+ * It can be used by pasting in the console window (F12 in Chrome) at the desired puzzle
+ *
+ * Note: With small modifications, it can also be used to get the full solution from the site
+ */
+
+/*
     var board = [],
         temp = [],
         block = Math.sqrt(gameBoard._boardMaskKey.length),
@@ -406,10 +413,9 @@ sudoku_25x25(P) :- P = [
     prologBoard += "(P) :- P = "
     prologBoard += JSON.stringify(board).replace("[[", "[\n\t[").replace("],[]]", "]].").replace(/(\],\[)/g, "],\n\t[").replace(/(\s0)/g, " _").replace(/([\"])|(\[\],)|(\s\",\")/g, '');
     console.log(prologBoard);
-
 */
 
-/* Oplossing 25x25
+/* Solution for 25x25
 [
     [ 7,20,24,15,17,   4, 3,12, 2,23,  21,14,11, 9, 1,  10,13,18,19, 5,  16,22, 8,25, 6],
     [ 1,13, 9,22,18,   6, 7,19,10,20,  16,25, 4, 5, 3,  17, 2,11,23, 8,  24,15,21,14,12],

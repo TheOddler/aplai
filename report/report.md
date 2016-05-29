@@ -71,7 +71,17 @@ Besides these practicalities, we found that both Jess and CHR are good for expre
 # SUDOKU
 
 ## TASK-DESCRIPTION
-Sudoku is a logic puzzle game with a board that consists of a field with N x N blocks consisting of a N x N grid. For example, one 3x3 blocks contains all numbers from 1 to 9. The whole grid consists of 9 blocks, where each column and each row should contain all numbers from 1 to 9.
+
+Sudoku is a logic puzzle game.
+It consists of a a 9 by 9 board, divided in 3 by 3 blocks.
+Each cell must contain exactly one number between 1 and 9, and at the start some of these are filled in.
+Each column, row and block must contain all different numbers, so it's up to the player to find a configuration that works within these constraints (without of course changing the given numbers).
+
+An alternative version of Sudoku works on any N by N grid.
+We implemented a version that supports any grid of `N = X^2`, where X is a whole number.
+So for instance, we support grids of 16 by 16 and 25 by 25.
+In the classic Sudoku there are 9 3 by 3 block, but in our case there are N X by X blocks.
+We chose to do this alternative version as it also includes the _normal_ Sudoku, and gave our solution an extra dimension.
 
 In this part we will discuss the implementation of our solver for Sudoku in _ECLiPSe_ and CHR.
 

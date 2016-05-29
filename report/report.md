@@ -36,12 +36,6 @@ Debugging can be a troublesome, as with any declarative language as there isn't 
 _ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkeclipse.
 But don't let the looks deceive you, the GUI works fairly well.
 
-### Our first choice
-
-_ECLiPSe_ is the first language we chose for this assignment.
-
-*__note__ Meer uitleg over waarom we eclipse gekozen hebben en de voor/nadelen voor sudoku/shikaku*
-
 ## CHR
 
 Constraint Handling Rules (CHR) allows for multiple rules to be defined in a certain order to simplify and propagate of multi-relation sets.
@@ -53,12 +47,6 @@ However, we will use the recommended Prolog implementation (SWI-prolog), which a
 CHR is free to download and has some online tutorials.
 Unfortunately, most of them refer to exactly the same examples.
 
-### Our second choice
-
-CHR is the second language we chose for this assignment.
-
-*__note__ Meer uitleg over waarom we CHR gekozen hebben en de voor/nadelen voor sudoku/shikaku*
-
 ## Jess
 
 Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier. It is free for academic use, but a license is needed for commercial use. And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
@@ -66,7 +54,33 @@ Jess is a rule engine for the Java platform. It has a GUI based on the open-sour
 However, the minor amount of available documentation, the trouble to get a working installation, the fact that it had not yet been introduced to us at the time of coding and the fact that it uses yet another language (JessML) instead of the already known Prolog syntax made Jess a less practical choice.
 Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
 
-*__note__ Meer uitleg over waarom we niet voor Jess gekozen hebben*
+## Which did we choose?
+
+For this assignment we chose **ECLiPSE** and **CHR** to make our solvers in.
+The main reasons for this are that ECLiPSE and CHR seem to have a superior amount of documentation and a more active community.
+
+The course was mainly focused on **ECLiPSE** so this was an easy choice, as this allowed us to start working on the assignment much sooner.
+Both **ECLiPSE** and **CHR** are also implemented on Prolog, which also makes working in both languages simultaneously much more enjoyable.
+
+When looking at the puzzles we had to solve for this assignment, Sudoku and Shikaku, **ECLiPSE** has some very useful features:
+
+* Both puzzles require some search, as there are no known set of constraints that can solve any puzzle, and ECLiPSE has very nice support for this with very powerful propagation support.
+* The build-in array syntax gave a very natural way of reasoning about the constraints and specifying them.
+* The for-loop support gave a very nice way to specify constraints on the cells
+* The `ic` libary provided some very nice constraints (e.i. alldifferent)
+
+There are however also some drawbacks:
+
+* Some functions require grounded variables, and it is not always immediately clear which these are. ECLiPSe allows variables to have a domian, but Prolog doesn't always agree with this, which can be confusing at times.
+* The required running time of a program can vary greatly on only slight changes in the code. As there is no way, to our knowledge, to see the propagation that is happening, nor are there any profiling tools, it is very hard to optimize the constraints.
+
+**CHR** is much more basic than ECLiPSE.
+It requires much more to be hand-crafted.
+However since it is implemented on Prolog you do get some very nice features.
+Mainly backtracking is very useful during search, as this also backtracks the changes that happened in the **CHR** constraint-store, allowing for a relatively easy way to implement a simple search strategy.
+So any rules of a puzzle are easily implemented, however once search is required CHR is harder to use.
+
+We didn't use **Jess** as this has the same problems as CHR, but doesn't have the nice features of Prolog and was only touched on very briefly at the end of the course.
 
 # SUDOKU
 
@@ -81,7 +95,7 @@ An alternative version of Sudoku works on any N by N grid.
 We implemented a version that supports any grid of `N = X^2`, where X is a whole number.
 So for instance, we support grids of 16 by 16 and 25 by 25.
 In the classic Sudoku there are 9 3 by 3 block, but in our case there are N X by X blocks.
-We chose to do this alternative version as it also includes the _normal_ Sudoku, and gave our solution an extra dimension.
+We chose to do this alternative version as it also includes the _normal_ Sudoku, and gave our solution a nice extra dimension (pun intended).
 
 In this part we will discuss the implementation of our solver for Sudoku in _ECLiPSe_ and CHR.
 
@@ -126,13 +140,11 @@ This made it so that both viewpoints actually already are channeled to the puzzl
 // TODO
 
 ## EXPERIMENTS SET-UP
-To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
-The file defines a method solve_all which/0 which will loop over all the different Sudokus defined in the sudex_toledo, using default channeling method. You can also solve a specific puzzle by using solve/2 using the puzzle name and model (simple, alt or both) as arguments.
-Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
 
-Besides using **ECLiPSE**, we also build a solver in **CHR** instead of **Jess**.
-The superior amount of documentation, the fact that we had seen an introduction of CHR when we started coding an alternative and the fact that it uses SWI-prolog made it the most practical choice.
-Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to *ECLiPSE*. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
+To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
+The file defines a method solve_all/0 which will loop over all the different Sudokus defined in the sudex_toledo, using default channeling method.
+You can also solve a specific puzzle by using solve/2 using the puzzle name and model ('simple', 'alt' or 'both') as arguments.
+Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
 
 *__Note:__ We implemented this to work for any NxN Sudokus. This was not obliged by the assignment but gave a nice extra dimension. (pun intended)*
 

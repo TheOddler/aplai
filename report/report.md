@@ -138,6 +138,7 @@ This made it so that both viewpoints actually already are channeled to the puzzl
 ### Channeling
 
 // TODO
+Hier was het moeilijker, hier is wel echt apparte file met dubbele code erin hiervoor.
 
 ## EXPERIMENTS SET-UP
 
@@ -205,7 +206,10 @@ This viewpoint is very similar but, as we will show, can give much better result
 
 ## Redundant constraint
 
-TODO
+As per the assignment we introduced a redundant constraint to improve the solution.
+In it's simplest form it is not needed to specify that each rectangle can only contain a single number.
+Since rectangles can't overlap, and each rectangle contains one of those numbers, it is implied that each rectangle contains exactly one number.
+So as an additional constraint we **explicitly** specify that each rectangle contains exactly one number, rather than implicitly through other constraints.
 
 ### ECLiPSe implementation
 
@@ -217,7 +221,8 @@ We defined them as rect(Point, c(X,Y))
 TODO
 
 ## EXPERIMENTS SET-UP
-The set-up is similar as in  the Sudoku set-up, whereas here we didn't do channeling and the puzzles are in a different file (puzzles.pl).
+
+The set-up is similar as in  the Sudoku set-up, however here we didn't do channeling (as normally there wouldn't even have been two viewpoints) and the puzzles are in a different file (puzzles.pl).
 When opening the CHR or eclipse implementation in the correct GUI, the solve/1 or solve_all/0 predicates can be used to solve a specific or all puzzles respectively.
 
 ## RESULTS
@@ -302,3 +307,18 @@ We each spent about [**INSERT_TIME_HERE**] on this assignment. The implementatio
 The extra Sudoku puzzles we tested came from: http://www.planetsudoku.net
 We used JavaScript code that can be executed in the console to easily get the Sudoku in the right format.
 The JavaScript code can be found in the sudex_toledo.pl file.
+
+
+TODO TODO TODO
+
+Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tekst):
+
+2.1:
+
+* What are the criteria you would use to judge whether a viewpoint is a
+good one or not?
+
+2.2:
+
+* Do you get dierent results when using dierent search heuristcs? for your 2 implementations? when using dierent viewpoints? using channeling? Why? -> Meer tests?
+* What is/are the most dicult puzzle(s) for your programs? Can you explain why this is the case?

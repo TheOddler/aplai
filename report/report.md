@@ -146,7 +146,7 @@ The file defines a method solve_all/0 which will loop over all the different Sud
 You can also solve a specific puzzle by using solve/2 using the puzzle name and model ('simple', 'alt' or 'both') as arguments.
 Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
 
-*__Note:__ We implemented this to work for any NxN Sudokus. This was not obliged by the assignment but gave a nice extra dimension. (pun intended)*
+*__Note:__ Since we implemented this to work for any NxN Sudokus we added two bigger Sudokus: a 16 by 16 and a 25 by 25 puzzle to the sudex_toledo file.*
 
 ## RESULTS
 **ECLiPSE**

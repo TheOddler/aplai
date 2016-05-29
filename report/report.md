@@ -2,8 +2,6 @@
 % Pablo Bollansée [r0465328], Vincent Tanghe [r0294173]
 % \today
 
-*__Note:__ This will be parsed to pdf in Pandoc later - though image references can be nice D:*
-
 # INTRODUCTION
 
 Constraint Logic Programming (CLP) is an augmentation of the logic programming paradigm where relations between variables are specified with constraints.
@@ -153,17 +151,15 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 
 ### ECLiPSe
 
-![Results of Sudoku ECLiPSE alternate implementation\label{voorbeeldLabel}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
+![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
 
 Voorbeeld reference: \ref{voorbeeldLabel}. Je maakt dan een label aan zoals hier boven (in md)!
 
-![Comparison between ECLiPSE and Channeling](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
+![Comparison between ECLiPSE and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
 
 **CHR**
 
-![alt text](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
-
-Image XXX: Results of Sudoku CHR implementation. _Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time._
+![Results of Sudoku CHR implementation. Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time\label{sudoku_chr_all}](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
 
 ## DISCUSSION
 **The _ECLiPSe_ implementation:**
@@ -228,9 +224,7 @@ When opening the CHR or eclipse implementation in the correct GUI, the solve/1 o
 ## RESULTS
 **_ECLiPSe_**
 
-![alt text](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
-
-Image XXX: Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)
+![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
 
 Puzzle | Normal time (sec) | Normal backtracks | Alt time (sec) | Alt backtracks
 -------|------------------:|------------------:|---------------:|---------------:
@@ -245,9 +239,7 @@ Table XXX: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alter
 
 **_CHR_**
 
-![alt text](images/shikaku_chr_chart.png "Results of Shikaku CHR implementation")
-
-Image XXX: Results of Shikaku CHR implementation up to problem p(4,5)
+![Results of Shikaku CHR implementation up to problem p(4,5)\label{shikaku_chr_chart}](images/shikaku_chr_chart.png "Results of Shikaku CHR implementation")
 
 Puzzle | Normal time (sec) | Normal inferences | Alt time (sec) | Alt inferences
 -------|------------------:|------------------:|---------------:|---------------:
@@ -264,8 +256,6 @@ Table XXX: The last 6 results of Shikaku CHR with the normal and the alternate v
 Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio. By putting them in a table, we could add the backtracks or inferences respectively.
 
 **The _ECLiPSe_ implementation:**
-
-**Mssn nog iets over: https://docs.google.com/spreadsheets/d/104v0hoB6St5OcGLtnciMYNh6vDZ2OritDcx8gM066NI/edit#gid=1346877380**
 
 We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model. Which is what we believe to be the main reason for the difference in speed.
 
@@ -327,5 +317,8 @@ good one or not?
 
 2.2:
 
-* Do you get dierent results when using dierent search heuristcs? for your 2 implementations? when using dierent viewpoints? using channeling? Why? -> Meer tests?
-* What is/are the most dicult puzzle(s) for your programs? Can you explain why this is the case?
+* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests?
+ ->Mssn nog iets over: https://docs.google.com/spreadsheets/d/104v0hoB6St5OcGLtnciMYNh6vDZ2OritDcx8gM066NI/edit#gid=1346877380
+
+* What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
+* alle XXX onder tables vervangen met actual table references D:

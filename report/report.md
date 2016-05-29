@@ -1,16 +1,10 @@
+% Report: Advanced Programming Languages in Artificial Intelligence
+% Pablo Bollansée [r0465328], Vincent Tanghe [r0294173]
+% \today
+
 *__Note:__ This will be parsed to pdf in Pandoc later - though image references can be nice D:*
 
-Report
-======
-***Advanced Programming Languages in Artificial Intelligence***
-
->Pablo Bollansée [r0465328]
->
->Vincent Tanghe	 [r0294173]
-
-
-1. INTRODUCTION
----------------
+# INTRODUCTION
 
 Constraint Logic Programming (CLP) is an augmentation of the logic programming paradigm where relations between variables are specified with constraints. It can be seen as an extension that brings relational arithmetic to Prolog.
 
@@ -20,43 +14,42 @@ This will be done by solving two different puzzle games with the languages _ECLi
 First we will do a short discussion of the CLP languages, followed by a discussion of our solver for the popular puzzle game Sudoku. Then we will discuss our approach for solving Shikaku and finally we will end with a conclusion regarding the assignment as a whole.
 
 
-2. Constraint Programming languages
------------------------------------------
-### 2.1 ECLiPSE
+# Constraint Programming languages
+
+## ECLiPSE
 _ECLiPSe_ is an Open-Source, Prolog-based system for the development and deployment of Constraint Programming applications. It is largely backwards compatible with Prolog, which means that a large set of the Prolog libraries are still be available. And it still has a fairly active community, which means that questions asked on popular forums (e.g. StackOverflow) will get answered within a reasonable amount of time.
 
 It extends Prolog by introducing new data types and structures such as arrays and for-loops, which make the programming easier. It is declarative, easy to understand and it has a built-in search mechanism that supports many different parameters. But the running time is highly dependent on the selected parameters (which define the heuristics). Because of its slight differences with Prolog and the way it handles lists, it can be confusing for programmers that are new to the language. And, debugging can be a troublesome as there is no information about the propagation within the solver.
 
 _ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkeclipse. But don't let the looks deceive you, the GUI works fairly well.
 
-### 2.2 CHR
+## CHR
 Constraint Handling Rules (CHR) allows for multiple rules to be defined in a certain order to simplify and propagate of multi-relation sets. It also allows you to define redundant rules that may further simplify the possibility space. CHR consists of multiple head atoms, followed by guarded rules.
 
 CHR is available in different languages, such as Java, Haskell and C. However, we will use the recommended Prolog implementation (SWI-prolog), which also means the SWI-Prolog editor and several prolog libraries become available. CHR is free to download and has some online tutorials. Unfortunately, most of them refer to exactly the same examples.
 
-### 2.3 Jess
+## Jess
 Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier. It is free for academic use, but a license is needed for commercial use. And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
 
 However, the minor amount of available documentation, the trouble to get a working installation, the fact that it had not yet been introduced to us at the time of coding and the fact that it uses yet another language (JessML) instead of the already known Prolog syntax made Jess a less practical choice.
 Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
 
 
-3. SUDOKU
----------
+# SUDOKU
 
-### 3.1 TASK-DESCRIPTION
+## TASK-DESCRIPTION
 Sudoku is a logic puzzle game with a board that consists of a field with N x N blocks consisting of a N x N grid. For example, one 3x3 blocks contains all numbers from 1 to 9. The whole grid consists of 9 blocks, where each column and each row should contain all numbers from 1 to 9.
 
 In this part we will discuss the implementation of our solver for Sudoku in _ECLiPSe_ and CHR.
 
-### 3.2 VIEWPOINTS AND PROGRAMS
+## VIEWPOINTS AND PROGRAMS
 The __classical viewpoint__ for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different. In this viewpoint, it comes down to mapping numbers to places.
 
 We propose an __alternate viewpoint__ where we map places, or coordinates, to the numbers. In this viewpoint, no coordinates can be double, each list should contain N coordinates (with N² being the width of the Sudoku) and each list must contain a coordinate from each block of the field.
 
 To combine both viewpoints, we used __channeling__ by linking the board variables to both implementations.
 
-### 3.3 EXPERIMENTS SET-UP
+## EXPERIMENTS SET-UP
 To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
 The file defines a method solve_all which/0 which will loop over all the different Sudokus defined in the sudex_toledo, using default channeling method. You can also solve a specific puzzle by using solve/2 using the puzzle name and model (simple, alt or both) as arguments.
 Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
@@ -67,7 +60,7 @@ Besides these practicalities, we found that both Jess and CHR are good for expre
 
 *__Note:__ We implemented this to work for any NxN Sudokus. This was not obliged by the assignment but gave a nice extra dimension. (pun intended)*
 
-### 3.4 RESULTS
+## RESULTS
 **ECLiPSE**
 
 ![alt text](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
@@ -84,7 +77,7 @@ Image XXX: Comparison between ECLiPSE and Channeling
 
 Image XXX: Results of Sudoku CHR implementation. _Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time._
 
-### 3.5 DISCUSSION
+## DISCUSSION
 **The _ECLiPSe_ implementation:**
 
 We can see that the classical view is faster than the other methods. However, there is one puzzle (Extra 2) where the power of channeling really does speed up the process.
@@ -102,25 +95,24 @@ The first thing we notice, solely based on our experiments, is that the implemen
 Personally, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
 
 
-4. SHIKAKU
-----------
+# SHIKAKU
 
-### 4.1 TASK-DESCRIPTION
+## TASK-DESCRIPTION
 Shikaku is a puzzle game where the board consists of a grid with some numbers filled in. To solve the puzzle, you need to transform each number into a square with a surface that equals the number, without overlap, until the whole board is filled.
 
 In this part we will discuss the implementation of our solver for Shikaku in _ECLiPSe_ and CHR.
 
-### 4.2 VIEWPOINTS AND PROGRAMS
+## VIEWPOINTS AND PROGRAMS
 The __classical viewpoint__ for Shikaku states that all squares -defined by a top-left coordinate, a width and height- must be inside the grid, contain the area of the given points and can't overlap.
 We defined them as rect(Point, c(X,Y))
 
 We propose an __alternate viewpoint__ (alt) where instead of one top-left coordinate, we define the top, left, bottom and right by a Y, X Y and X coordinate respectively. We know that another viewpoint was not part of the assignment, but we noticed that this alternate viewpoint greatly improved the overall performance.
 
-### 4.3 EXPERIMENTS SET-UP
+## EXPERIMENTS SET-UP
 The set-up is similar as in  the Sudoku set-up, whereas here we didn't do channeling and the puzzles are in a different file (puzzles.pl).
 When opening the CHR or eclipse implementation in the correct GUI, the solve/1 or solve_all/0 predicates can be used to solve a specific or all puzzles respectively.
 
-### 4.4 RESULTS
+## RESULTS
 **_ECLiPSe_**
 
 ![alt text](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
@@ -154,7 +146,7 @@ p(5,5) | 57,242            | 366 411 206       | 63,839         | 725 171 392
 p(6,1) | 156,980           | 982 498 648       | 124,253        | 1 354 737 953
 Table XXX: The last 6 results of Shikaku CHR with the normal and the alternate viewpoint
 
-### 4.5 DISCUSSION
+## DISCUSSION
 
 Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio. By putting them in a table, we could add the backtracks or inferences respectively.
 
@@ -179,15 +171,15 @@ Another interesting thing we notice, is that the amount of inferences does not n
 The difference a different viewpoint can make really flourishes in this example, as the different viewpoint in the _ECLiPSe_ implementation has a large speed increase.
 
 
-5. EXTRA
---------
+# EXTRA
+
 While we didn't take one of the given options of the extra assignment, we did extend the given assignments:
 - We implemented sudoku for dynamic dimensions (NxN) instead of the regular 9x9
 - We implemented a different (and apparently faster) viewpoint for Shikaku (as explained in the 4)
 
 
-6. CONCLUSION
--------------
+# CONCLUSION
+
 We have experienced first-hand that debugging the CLP can be a challenge, but that the needed code remains surprisingly short without compromising for the readability. We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed. We learned that a creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint. And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance in CHR.
 
 In retrospect of the teamwork, we think that we managed to lower the workload by balancing our capacities. We attempted to distribute the different aspects of the assignment and used peer-programming of one of us got stuck at a problem. We tried to keep an even distribution over the languages so both of us got a taste of working with both implementations.
@@ -195,8 +187,8 @@ In retrospect of the teamwork, we think that we managed to lower the workload by
 Overall, it was interesting to work with CLP languages and see the empirical results rather than the solely the theoretical.
 
 
-7. APPENDIX
------------
+# APPENDIX
+
 We each spent about [**INSERT_TIME_HERE**] on this assignment. The implementation of Sudoku took longest, which is probably due to the lack of experience as we finished this assignment in chronological order.
 
 The extra Sudoku puzzles we tested came from: http://www.planetsudoku.net

@@ -149,15 +149,14 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 *__Note:__ Since we implemented this to work for any NxN Sudokus we added two bigger Sudokus: a 16 by 16 and a 25 by 25 puzzle to the sudex_toledo file.*
 
 ## RESULTS
-**ECLiPSE**
 
-![alt text](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
+### ECLiPSe
 
-Image XXX: Results of Sudoku ECLiPSE alternate implementation
+![Results of Sudoku ECLiPSE alternate implementation\label{voorbeeldLabel}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
 
-![alt text](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
+Voorbeeld reference: \ref{voorbeeldLabel}. Je maakt dan een label aan zoals hier boven (in md)!
 
-Image XXX: Comparison between ECLiPSE and Channeling
+![Comparison between ECLiPSE and Channeling](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
 
 **CHR**
 
@@ -182,6 +181,7 @@ The first thing we notice, solely based on our experiments, is that the implemen
 
 Personally, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
 
+// TODO: Ik zou precies die bespreking en de afbeeldingen samen zetten. En mag meer besproken worden denkik.
 
 # SHIKAKU
 

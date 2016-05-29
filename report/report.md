@@ -6,34 +6,67 @@
 
 # INTRODUCTION
 
-Constraint Logic Programming (CLP) is an augmentation of the logic programming paradigm where relations between variables are specified with constraints. It can be seen as an extension that brings relational arithmetic to Prolog.
+Constraint Logic Programming (CLP) is an augmentation of the logic programming paradigm where relations between variables are specified with constraints.
+It can be seen as an extension that brings relational arithmetic to Prolog.
 
-For the course Advanced Programming Languages in Artificial Intelligence, we are given the opportunity to get real experience with some CLP languages. The goal of this assignment is to get practical experience with different CLP languages and to get a deeper understanding in how they work.
-This will be done by solving two different puzzle games with the languages _ECLiPSe_ and Constraint Handling Rules (CHR).
+For the course Advanced Programming Languages in Artificial Intelligence, we are given the opportunity to get real experience with some CLP languages.
+The goal of this assignment is to get practical experience with different CLP languages and to get a deeper understanding in how they work.
+This will be done by solving two different puzzle games with the languages two of three thought languages: _ECLiPSe_, _Constraint Handling Rules_ (_CHR_) and _Jess_.
 
-First we will do a short discussion of the CLP languages, followed by a discussion of our solver for the popular puzzle game Sudoku. Then we will discuss our approach for solving Shikaku and finally we will end with a conclusion regarding the assignment as a whole.
-
+First we will do a short discussion of the CLP languages, explaining which we chose and why.
+We then discuss of our solver for the popular puzzle game Sudoku in both chosen languages, followed by a discussion our approach for solving Shikaku.
+Finally we will end with a conclusion regarding the assignment as a whole.
 
 # Constraint Programming languages
 
 ## ECLiPSE
-_ECLiPSe_ is an Open-Source, Prolog-based system for the development and deployment of Constraint Programming applications. It is largely backwards compatible with Prolog, which means that a large set of the Prolog libraries are still be available. And it still has a fairly active community, which means that questions asked on popular forums (e.g. StackOverflow) will get answered within a reasonable amount of time.
 
-It extends Prolog by introducing new data types and structures such as arrays and for-loops, which make the programming easier. It is declarative, easy to understand and it has a built-in search mechanism that supports many different parameters. But the running time is highly dependent on the selected parameters (which define the heuristics). Because of its slight differences with Prolog and the way it handles lists, it can be confusing for programmers that are new to the language. And, debugging can be a troublesome as there is no information about the propagation within the solver.
+_ECLiPSe_ is an Open-Source, Prolog-based system for the development and deployment of Constraint Programming applications.
+It is largely backwards compatible with Prolog, which means that a large set of the Prolog libraries are still be available.
+It also includes its own development environment _TkEclipse_, which includes some tools for debugging.
+It also has a fairly active community, which means that questions asked on popular forums (e.g. StackOverflow) will get answered within a reasonable amount of time.
 
-_ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkeclipse. But don't let the looks deceive you, the GUI works fairly well.
+_ECLiPSe_ extends Prolog by providing a core language for specifying constraints and relations between variables.
+It also introducing new data types and structures such as arrays and for-loops, which make the programming easier even though for-loops in a declarative language might seem weird.
+It is declarative, easy to understand and it has a built-in search mechanism that supports many different parameters.
+The running time, however, is highly dependent on the selected parameters (which define the heuristics used during the search).
+Because of its slight differences with Prolog and the way it handles lists, it can be confusing for programmers that are new to the language.
+Debugging can be a troublesome, as with any declarative language as there isn't always a clear path trough the code, however the _TkEclipse_ debugging tools relieve this problem a bit.
+
+_ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkeclipse.
+But don't let the looks deceive you, the GUI works fairly well.
+
+### Our first choice
+
+_ECLiPSe_ is the first language we chose for this assignment.
+
+*__note__ Meer uitleg over waarom we eclipse gekozen hebben en de voor/nadelen voor sudoku/shikaku*
 
 ## CHR
-Constraint Handling Rules (CHR) allows for multiple rules to be defined in a certain order to simplify and propagate of multi-relation sets. It also allows you to define redundant rules that may further simplify the possibility space. CHR consists of multiple head atoms, followed by guarded rules.
 
-CHR is available in different languages, such as Java, Haskell and C. However, we will use the recommended Prolog implementation (SWI-prolog), which also means the SWI-Prolog editor and several prolog libraries become available. CHR is free to download and has some online tutorials. Unfortunately, most of them refer to exactly the same examples.
+Constraint Handling Rules (CHR) allows for multiple rules to be defined in a certain order to simplify and propagate of multi-relation sets.
+It also allows you to define redundant rules that may further simplify the possibility space.
+CHR consists of multiple head atoms, followed by guarded rules.
+
+CHR is available in different languages, such as Java, Haskell and C.
+However, we will use the recommended Prolog implementation (SWI-prolog), which also means the SWI-Prolog editor and several prolog libraries become available.
+CHR is free to download and has some online tutorials.
+Unfortunately, most of them refer to exactly the same examples.
+
+### Our second choice
+
+CHR is the second language we chose for this assignment.
+
+*__note__ Meer uitleg over waarom we CHR gekozen hebben en de voor/nadelen voor sudoku/shikaku*
 
 ## Jess
+
 Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier. It is free for academic use, but a license is needed for commercial use. And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
 
 However, the minor amount of available documentation, the trouble to get a working installation, the fact that it had not yet been introduced to us at the time of coding and the fact that it uses yet another language (JessML) instead of the already known Prolog syntax made Jess a less practical choice.
 Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
 
+*__note__ Meer uitleg over waarom we niet voor Jess gekozen hebben*
 
 # SUDOKU
 

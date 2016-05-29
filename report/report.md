@@ -288,21 +288,28 @@ The difference a different viewpoint can make really flourishes in this example,
 
 While we didn't take one of the given options of the extra assignment, we did extend the given assignments:
 - We implemented sudoku for dynamic dimensions (NxN) instead of the regular 9x9
-- We implemented a different (and apparently faster) viewpoint for Shikaku (as explained in the 4)
+- We implemented a different (and faster) viewpoint for Shikaku (as explained in the 4)
 
+We did this because it came naturally during the development of our solution.
+We found it a fun challenge to allow for more sizes of Sudoku, and the alternative viewpoint of Shikaku came from a desire to make a faster solution.
 
 # CONCLUSION
 
-We have experienced first-hand that debugging the CLP can be a challenge, but that the needed code remains surprisingly short without compromising for the readability. We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed. We learned that a creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint. And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance in CHR.
+We have experienced first-hand that debugging the CLP can be a challenge, but that the needed code remains surprisingly short without compromising for the readability.
+We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed.
+We learned that a creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint.
+And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance in CHR.
 
-In retrospect of the teamwork, we think that we managed to lower the workload by balancing our capacities. We attempted to distribute the different aspects of the assignment and used peer-programming of one of us got stuck at a problem. We tried to keep an even distribution over the languages so both of us got a taste of working with both implementations.
+In retrospect of the teamwork, we think that we managed to lower the workload by balancing our capacities.
+We attempted to distribute the different aspects of the assignment and used peer-programming of one of us got stuck at a problem.
+We tried to keep an even distribution over the languages so both of us got a taste of working with both implementations.
 
 Overall, it was interesting to work with CLP languages and see the empirical results rather than the solely the theoretical.
 
-
 # APPENDIX
 
-We each spent about [**INSERT_TIME_HERE**] on this assignment. The implementation of Sudoku took longest, which is probably due to the lack of experience as we finished this assignment in chronological order.
+We each spent about 50 hours on this assignment.
+The implementation of Sudoku took longest, which is probably due to the lack of experience as we finished this assignment in chronological order.
 
 The extra Sudoku puzzles we tested came from: http://www.planetsudoku.net
 We used JavaScript code that can be executed in the console to easily get the Sudoku in the right format.

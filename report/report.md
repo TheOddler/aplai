@@ -186,15 +186,35 @@ Personally, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
 # SHIKAKU
 
 ## TASK-DESCRIPTION
-Shikaku is a puzzle game where the board consists of a grid with some numbers filled in. To solve the puzzle, you need to transform each number into a square with a surface that equals the number, without overlap, until the whole board is filled.
 
-In this part we will discuss the implementation of our solver for Shikaku in _ECLiPSe_ and CHR.
+Shikaku is a puzzle game where the board consists of a grid with in some cells a number.
+To solve the puzzle, you need to transform each number into a rectangle with a surface that equals the number, so that none of the rectangles overlap and the whole board is filled.
+
+The assignment stated that we had to create a single viewpoint.
+However during the implementation we tried a second slightly different one as well, as we were not satisfied with the speed of our original viewpoint.
+
+In this part we will discuss both viewpoints and the implementation of our solvers for Shikaku in _ECLiPSe_ and CHR.
 
 ## VIEWPOINTS AND PROGRAMS
-The __classical viewpoint__ for Shikaku states that all squares -defined by a top-left coordinate, a width and height- must be inside the grid, contain the area of the given points and can't overlap.
-We defined them as rect(Point, c(X,Y))
 
-We propose an __alternate viewpoint__ (alt) where instead of one top-left coordinate, we define the top, left, bottom and right by a Y, X Y and X coordinate respectively. We know that another viewpoint was not part of the assignment, but we noticed that this alternate viewpoint greatly improved the overall performance.
+The __classical viewpoint__ for Shikaku is one where all squares are defined by a top-left coordinate, a width and height.
+They must be inside the grid, contain the number, have an area equal to that number and can't overlap.
+
+As an __alternate viewpoint__ (alt) we propose a viewpoint where instead of a top-left coordinate, width and height, we define the top, left, bottom and right coordinate.
+This viewpoint is very similar but, as we will show, can give much better results in term of speed.
+
+## Redundant constraint
+
+TODO
+
+### ECLiPSe implementation
+
+We defined them as rect(Point, c(X,Y))
+... ... ... TODO
+
+### CHR implementation
+
+TODO
 
 ## EXPERIMENTS SET-UP
 The set-up is similar as in  the Sudoku set-up, whereas here we didn't do channeling and the puzzles are in a different file (puzzles.pl).

@@ -86,11 +86,44 @@ We chose to do this alternative version as it also includes the _normal_ Sudoku,
 In this part we will discuss the implementation of our solver for Sudoku in _ECLiPSe_ and CHR.
 
 ## VIEWPOINTS AND PROGRAMS
-The __classical viewpoint__ for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different. In this viewpoint, it comes down to mapping numbers to places.
 
-We propose an __alternate viewpoint__ where we map places, or coordinates, to the numbers. In this viewpoint, no coordinates can be double, each list should contain N coordinates (with N² being the width of the Sudoku) and each list must contain a coordinate from each block of the field.
+The __classical viewpoint__ for Sudoku is a simple 2D grid of numbers.
+The rules of Sudoku then state that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different.
+These are quite easy to define in _ECLiPSe_ (see later).
+In this viewpoint, it comes down to mapping numbers to places.
+
+For the __alternate viewpoint__ we propose a viewpoint where we map places, or coordinates, to the numbers.
+For the classic Sudoku this means that there are 9 list of 9 coordinates, as there are 9 1's that need a place in the grid, 9 2's, ....
+The rules of Sudoku are of course unchanged, however the constraints are specified slightly different for this viewpoints:
+Each list must contain exactly one coordinate in each row, column, and block.
+Also between lists no coordinate may exist twice.
 
 To combine both viewpoints, we used __channeling__ by linking the board variables to both implementations.
+
+## Eclipse implementations
+
+explain the eclipse implementation a bit more, how we used constraints and such
+
+ook spreken over dat we zo de colum in de lijst als x waarde gebruiken, en het nummerke er in als y waarde
+
+// TODO
+
+### Channeling
+
+To do channeling the constraints from both viewpoints need to be 'linked' to each other, so that if one variable's domain changes this can be propagated to the variables of the other viewpoint.
+For our _ECLiPSe_ implementation this was very easy.
+Both viewpoints' variables are unified with the variables of the given puzzle, and constraints added on them.
+This made it so that both viewpoints actually already are channeled to the puzzle, and thus to channel both viewpoints all we had to do it let them both add their constraints to the puzzle and then let _ECLiPSe_ run a search on the puzzle's variables (which now have constraints from both viewpoints).
+
+## CHR implementation
+
+...
+
+// TODO
+
+### Channeling
+
+// TODO
 
 ## EXPERIMENTS SET-UP
 To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.

@@ -303,12 +303,20 @@ So as an additional constraint we **explicitly** specify that each rectangle con
 
 ### ECLiPSe implementation
 
-We defined them as rect(Point, c(X,Y))
-... ... ... TODO
+As with Sudoku, ECLiPSe lend itself very well to this problem.
+We represented each rectangle as a X and Y coordinate for the upper left corner, and a Width and Height variable.
+Since each hint will give rise to exactly one rectangle, we simply iterated over the given hints, and create a single rectangle for each.
+Then it simply came down to defining the constraints which are all quite straightforward.
+
+For the alternative view we represented the rectangles as 4 coordinates: Top, Left, Bottom, Right.
+The constraints then had to be rewritten, but were conceptually the same.
+The biggest difference was that, for this alternative view, constraints required less arithmetic.
+Mainly because we already have the bottom right coordinate, whereas in the normal view we had to calculate is by adding width and height to the top left coordinate.
+We believe this allowed ECLiPSe to do better propagation, which could explain the overal performace gain.
 
 ### CHR implementation
 
-TODO
+TODO TODO Doe jij deze maar Vincent, want kheb geen goesting die uit te pluizen xD Zal u uitleg dan lezen, dan begrijp ik het :D
 
 ## EXPERIMENTS SET-UP
 

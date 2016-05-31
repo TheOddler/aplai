@@ -308,6 +308,9 @@ We represented each rectangle as a X and Y coordinate for the upper left corner,
 Since each hint will give rise to exactly one rectangle, we simply iterated over the given hints, and create a single rectangle for each.
 Then it simply came down to defining the constraints which are all quite straightforward.
 
+The grid is simply assumed to start at coordinate 1,1 and end in Width,Height.
+Other than the constraints on the rectangles there is no real representation of the grid.
+
 For the alternative view we represented the rectangles as 4 coordinates: Top, Left, Bottom, Right.
 The constraints then had to be rewritten, but were conceptually the same.
 The biggest difference was that, for this alternative view, constraints required less arithmetic.
@@ -412,6 +415,10 @@ TODO TODO TODO
 
 Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tekst):
 
+Intro:
+
+* In the conclusion you give a critical reflection on your work. What are the strong points? and the weak points? What are the lessons learned?
+
 2.1:
 
 * What are the criteria you would use to judge whether a viewpoint is a
@@ -424,3 +431,13 @@ good one or not?
 
 * What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
 * alle XXX onder tables vervangen met actual table references D:
+
+3.3.1:
+
+* Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil?
+* Discuss the impact of the dierent search strategies.
+
+3.3.2:
+
+* 3. Describe how you deal with constraint propagation, and what kind(s) of propagation you support. Are the constraints passive or active? Try to have active constraints if possible.
+* 5. Propose some additional constraints that may speed up solving, and implement a at least 2 of them. -> Wat bedoelt ze hier mee? Gaat over Shikaku, 2 extra constraints? :/

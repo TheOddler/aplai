@@ -114,18 +114,55 @@ To combine both viewpoints, we used __channeling__ by linking the board variable
 
 ## Eclipse implementations
 
-explain the eclipse implementation a bit more, how we used constraints and such
+### Normal view
 
-ook spreken over dat we zo de colum in de lijst als x waarde gebruiken, en het nummerke er in als y waarde
+Eclipse is very well suited for these kinds of problems.
+The implementation reflects this, and is quite simple.
+First we give each cell an initial domain, 1 to 9 (or 1 to N in our case).
+Then, since the puzzles are already given as a grid of numbers, all we had to do was iterate over each row, column and block and add the `alldifferent` constraint from the `ic` library.
+Eclipse has a very nice array syntax, so this was quite easy:
 
-// TODO
+	( for(I,1,D), param(BoardArray,D) % D is the dimention of the board
+	do
+		Row is BoardArray[I,1..D],
+		Col is BoardArray[1..D,I],
+		alldifferent(Row),
+		alldifferent(Col)
+	).
+
+Similarly we extract each block and add the `alldifferent` constaint.
+All that's left then is starting the search.
+
+### Alternative view
+
+The implementation of the alternative view is very similar.
+Here we use again a N by N grid, each row represents a number (which was N coordinated).
+Each column represents the X coordinate, whereas the number in the array represents the Y coordinate.
+Then again we use multiple `alldifferent` constraints to ensure that no numbers share spaces.
+
+One more complex part was extracting the numbers for this view from the puzzle, and linking it to the variables.
+Here we used the excellent `#=/3`.
+This is a build-in that allows you to add an equality constraint based on a third boolean variable.
+This works as followed:
+
+    ( multifor([I,R,C], [1,1,1], [N,N,N]),
+        param(BoardArray, Coordinates)
+    do
+        #=(BoardArray[R,C], I, B),
+        #=(Coordinates[I,C], R, B)
+    ).
+
+The `BoardArray` is the puzzle (simple 2D array with numbers), where the `Coordinates` is our alternative view (2D array with the numbers representing Y coordinates).
+This code basically makes sure than when a number on position `Row,Col` is equal to `I` in the puzzle, that the number on position `I,Col` is equal to `Row`.
 
 ### Channeling
 
 To do channeling the constraints from both viewpoints need to be 'linked' to each other, so that if one variable's domain changes this can be propagated to the variables of the other viewpoint.
 For our _ECLiPSe_ implementation this was very easy.
-Both viewpoints' variables are unified with the variables of the given puzzle, and constraints added on them.
-This made it so that both viewpoints actually already are channeled to the puzzle, and thus to channel both viewpoints all we had to do it let them both add their constraints to the puzzle and then let _ECLiPSe_ run a search on the puzzle's variables (which now have constraints from both viewpoints).
+Both viewpoints' variables are already linked with the variables of the given puzzle, and constraints added on them.
+The original view unifies their variables with those in the puzzle, where our alternative links them as described above.
+This made it so that both viewpoints actually already are channeled to the puzzle.
+To channel both viewpoints all we had to do was let them both add their constraints to the same puzzle and then let _ECLiPSe_ search on the combined variables.
 
 ## CHR implementation
 

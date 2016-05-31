@@ -426,16 +426,16 @@ good one or not?
 
 2.2:
 
-* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests?
+* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests?
  ->Mssn nog iets over: https://docs.google.com/spreadsheets/d/104v0hoB6St5OcGLtnciMYNh6vDZ2OritDcx8gM066NI/edit#gid=1346877380
 
-* What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
+* What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
 * alle XXX onder tables vervangen met actual table references D:
 
 3.3.1:
 
 * Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil?
-* Discuss the impact of the dierent search strategies.
+* Discuss the impact of the different search strategies.
 
 3.3.2:
 

@@ -166,14 +166,71 @@ To channel both viewpoints all we had to do was let them both add their constrai
 
 ## CHR implementation
 
-...
+### Normal View
 
-// TODO
+The CHR implementation of Sudoku uses a `cell/2` CHR constraint to represent all cells.
+The first variable is the position of the cell (X and Y coordinate) where the second is a list of possible values.
+So at the start our program creates `N*N` cell constraints (81 for a 9 by 9 Sudoku), with either a list with all numbers from 1 to N, or a list with one number if it was given.
+Then we start the search process, by creating a CHR constraint `propagate`.
+This will activate our first-fail search implementation:
+
+    propagate <=> search(2).
+
+    first_fail @ search(N), cell((Row,Col), Vs) # passive
+    <=> length(Vs, Len), Len =:= N | member(V, Vs), cell((Row,Col), [V]), propagate.
+
+    search(N) <=> nb_getval(width, Width), N == Width | true.
+    search(N) <=> NN is N + 1, search(NN).
+
+It starts by looking for cells with 2 possible values, and then selects one of those two to be tried out.
+If there are no cells with 2 possible values left, it will look for a cell with 3 possible values, and so on.
+
+We modeled the rules of Sudoku as CHR rules, that when fired, will just make the program fail.
+So for instance, if the same value occurs twice on the same row:
+
+    alldifferent_in_row @ cell((Row, ColA), [Value]), cell((Row,ColB), [Value]) # passive
+        <=> ColA \= ColB | false.
+
+This will cause the program to backtrack to our search (the `member\2` clause to be exact) and try a different number.
+
+Lastly we implemented some propagation rules.
+They check to see if there is a cell with a known number (so only one value is left in the list of possible values), and they check if there is another cell in the same row, column or block, and will remove that value from their possible values.
+For instance, for rows:
+
+    eliminate_in_row @ propagate, cell((Row,\_), [Value])
+        \\ cell((Row,Col), [V1, V2 | Vs])
+        <=> select(Value, [V1, V2 | Vs], NVs)
+            | cell((Row, Col), NVs).
+
+Note that the second cell must have at least two possible values, otherwise removing one might give us a cell without possible values.
+If there are two cells in the same row with both the same value as only possibility, this will be caught by the other CHR rules.
+
+### Alternative view
+
+The alternative view is very similar.
+Here we represent the variables as `rvc\2` ((row,value),colums).
+However it required a bit more care, especially when creating the initial rvc constraints.
+It's not easy to explain clearly without going in too much detail, but it should become clear when looking at the code.
+If not, we guess that's what the oral examination is for.
+Other than that, the code is very similar to the normal view.
 
 ### Channeling
 
-// TODO
-Hier was het moeilijker, hier is wel echt apparte file met dubbele code erin hiervoor.
+In CHR the channeling wasn't as easy as in ECLiPSe.
+It's a new file that includes the implementation of both views.
+To channel both we added some extra constraint and rules.
+The additional constraints are a `fix_rcv` and `remove_rcv`:
+
+    fix_rcv(Row,Col,Val),
+    cell((Row,Col), \_), rvc((Row,Val),\_)
+    <=> cell((Row,Col), [Val]), rvc((Row,Val),[Col]).
+
+So `fix_rcv` fixes the corresponding cell and rvc constraint to exact values.
+The `remove_rcv` removes a possible value from the cell constraint, or a possible column from the rvc constaint.
+`remove_rcv` requires a bit more code to handle all edge cases, so isn't shown here.
+
+The rules from both views are both included, and slightly altered to make use of these new constraints.
+We also included both search rules so it will first try either cell or rvc constraints with the smallest domain, before continuing the search in constraints with bigger domains.
 
 ## EXPERIMENTS SET-UP
 

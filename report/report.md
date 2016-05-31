@@ -182,7 +182,7 @@ This will activate our first-fail search implementation:
     search(N) <=> nb_getval(width, Width), N == Width | true.
     search(N) <=> NN is N + 1, search(NN).
 
-It starts by looking for cells with 2 possible values, and then selects one of those two to be tried out.
+It starts by looking for cells with 2 possible values and then selects one of those two to be tried out.
 If there are no cells with 2 possible values left, it will look for a cell with 3 possible values, and so on.
 
 We modeled the rules of Sudoku as CHR rules, that when fired, will just make the program fail.
@@ -317,7 +317,14 @@ We believe this allowed _ECLiPSe_ to do better propagation, which could explain 
 
 ### CHR implementation
 
-TODO TODO Doe jij deze maar Vincent, want kheb geen goesting die uit te pluizen xD Zal u uitleg dan lezen, dan begrijp ik het :D
+We modeled this implementation pretty similar to the CHR implementation of Sudoku, whereas in Sudoku there was a list of possible coordinates while here we give a list of possible squares.
+Or more concretely, we introduce two new constraints, `rect/2` and `rect/3` where `rect/2` contains as second argument a list of X and Y coordinates of the upper left corner in combination with its width and height.
+First, a `rect/2` will be created for each given point, with a list of all possible that could fit at that position.
+Then, the propagate constraint is initiated, which starts the propagation process where a possible rectangle from `rect/2` is proposed as a `rect/3`  constraint.
+And to prevent overlapping rectangles, we have constraints that passively check for overlaps between proposed `rect/3` of actively filter possible rectangles out of other `rect/2`.
+
+For the alternate view, we introduced yet another constraint `rect/5` to contain a Top, Left, Bottom and Right value.
+We still contain the `rect/3` constraint to be able to use the nice print function that was proposed within the assignment for printing Shikaku.
 
 ## EXPERIMENTS SET-UP
 

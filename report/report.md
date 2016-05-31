@@ -41,7 +41,7 @@ It also allows you to define redundant rules that may further simplify the possi
 CHR consists of multiple head atoms, followed by guarded rules.
 
 CHR is available in different languages, such as Java, Haskell and C.
-However, we will use the recommended Prolog implementation (SWI-prolog), which also means the SWI-Prolog editor and several prolog libraries become available.
+However, we will use the recommended Prolog implementation (SWI-Prolog), which also means the SWI-Prolog editor and several Prolog libraries become available.
 CHR is free to download and has some online tutorials.
 Unfortunately, most of them refer to exactly the same examples.
 
@@ -69,13 +69,13 @@ When looking at the puzzles we had to solve for this assignment, Sudoku and Shik
 
 There are however also some drawbacks:
 
-* Some functions require grounded variables, and it is not always immediately clear which these are. ECLiPSe allows variables to have a domian, but Prolog doesn't always agree with this, which can be confusing at times.
+* Some functions require grounded variables, and it is not always immediately clear which these are. ECLiPSe allows variables to have a domain, but Prolog doesn't always agree with this, which can be confusing at times.
 * The required running time of a program can vary greatly on only slight changes in the code. As there is no way, to our knowledge, to see the propagation that is happening, nor are there any profiling tools, it is very hard to optimize the constraints.
 
 **CHR** is much more basic than ECLiPSE.
 It requires much more to be hand-crafted.
 However since it is implemented on Prolog you do get some very nice features.
-Mainly backtracking is very useful during search, as this also backtracks the changes that happened in the **CHR** constraint-store, allowing for a relatively easy way to implement a simple search strategy.
+Mainly backtracking is very useful during search, as this also backtracks the changes that happened in the  **CHR** constraint-store, allowing for a relatively easy way to implement a simple search strategy.
 So any rules of a puzzle are easily implemented, however once search is required CHR is harder to use.
 
 We didn't use **Jess** as this has the same problems as CHR, but doesn't have the nice features of Prolog and was only touched on very briefly at the end of the course.
@@ -143,7 +143,7 @@ Then again we use multiple `alldifferent` constraints to ensure that no numbers 
 One more complex part was extracting the numbers for this view from the puzzle, and linking it to the variables.
 Here we used the excellent `#=/3`.
 This is a build-in that allows you to add an equality constraint based on a third boolean variable.
-This works as followed:
+This works as follows:
 
     ( multifor([I,R,C], [1,1,1], [N,N,N]),
         param(BoardArray, Coordinates)
@@ -226,7 +226,7 @@ The additional constraints are a `fix_rcv` and `remove_rcv`:
     <=> cell((Row,Col), [Val]), rvc((Row,Val),[Col]).
 
 So `fix_rcv` fixes the corresponding cell and rvc constraint to exact values.
-The `remove_rcv` removes a possible value from the cell constraint, or a possible column from the rvc constaint.
+The `remove_rcv` removes a possible value from the cell constraint, or a possible column from the rvc constraint.
 `remove_rcv` requires a bit more code to handle all edge cases, so isn't shown here.
 
 The rules from both views are both included, and slightly altered to make use of these new constraints.
@@ -246,8 +246,6 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 ### ECLiPSe
 
 ![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
-
-Voorbeeld reference: \ref{voorbeeldLabel}. Je maakt dan een label aan zoals hier boven (in md)!
 
 ![Comparison between ECLiPSE and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
 
@@ -301,9 +299,9 @@ In it's simplest form it is not needed to specify that each rectangle can only c
 Since rectangles can't overlap, and each rectangle contains one of those numbers, it is implied that each rectangle contains exactly one number.
 So as an additional constraint we **explicitly** specify that each rectangle contains exactly one number, rather than implicitly through other constraints.
 
-### ECLiPSe implementation
+### _ECLiPSe_ implementation
 
-As with Sudoku, ECLiPSe lend itself very well to this problem.
+As with Sudoku, _ECLiPSe_ lend itself very well to this problem.
 We represented each rectangle as a X and Y coordinate for the upper left corner, and a Width and Height variable.
 Since each hint will give rise to exactly one rectangle, we simply iterated over the given hints, and create a single rectangle for each.
 Then it simply came down to defining the constraints which are all quite straightforward.
@@ -315,7 +313,7 @@ For the alternative view we represented the rectangles as 4 coordinates: Top, Le
 The constraints then had to be rewritten, but were conceptually the same.
 The biggest difference was that, for this alternative view, constraints required less arithmetic.
 Mainly because we already have the bottom right coordinate, whereas in the normal view we had to calculate is by adding width and height to the top left coordinate.
-We believe this allowed ECLiPSe to do better propagation, which could explain the overal performace gain.
+We believe this allowed _ECLiPSe_ to do better propagation, which could explain the overall performance gain.
 
 ### CHR implementation
 

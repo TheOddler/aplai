@@ -241,36 +241,53 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 
 *__Note:__ Since we implemented this to work for any NxN Sudokus we added two bigger Sudokus: a 16 by 16 and a 25 by 25 puzzle to the sudex_toledo file.*
 
-## RESULTS
+## Discussion
 
 ### ECLiPSe
 
+The first thing we noticed is that our alternate viewpoint is a lot slower than the first one.
+It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time. (as seen in the results on the image below)
+
 ![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
+
+Furthermore, we noticed that the channeling didn't help our primary viewpoint much to gain speed.
+In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
+But we are unsure why exactly this Sudoku puzzle appears so hard.
 
 ![Comparison between ECLiPSE and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
 
-**CHR**
+We can also noticed that only the classical viewpoint uses backtracks.
+Which could mean that the constraints are stronger in the alternate viewpoint and with channeling, meaning that only the correct numbers are found for each cell.
+But, because of the long running times, we think that there could be ghost backtracks which are not captured by the program.
+
+With _ECLiPSE_, there are a lot of search parameters that you can choose from
+// TODO **zetten we die hier allemaal met uitleg?**
+
+To test which strategy gives us the best result, we decided to run them all on our primary implementation.
+To get an apples-to-apples comparison, we selected one variable assignment (e.g. indomain) strategy to test all variable selection (e.g. input_order) strategies and visa versa.
+
+// TODO get charts from
+https://docs.google.com/spreadsheets/d/1tK9kzdW0TNtewz--Ee8UDpDL9Ls8Bkrt4dGVuO1EgYg/edit#gid=1346877380
+
+We can clearly see the importance of these settings from our empirical results.
+For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
+But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but the propagation order was bad for that puzzle.
+
+// TODO more conclusions?
+
+### CHR
+
+With CHR, the difference in results is much lower which allows all results to still be shown on one chart, as seen below:
 
 ![Results of Sudoku CHR implementation. Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time\label{sudoku_chr_all}](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
 
-## DISCUSSION
-**The _ECLiPSe_ implementation:**
-
-We can see that the classical view is faster than the other methods. However, there is one puzzle (Extra 2) where the power of channeling really does speed up the process.
-We can also noticed that only the classical viewpoint uses backtracks.
-It could also mean that the constraints are stronger in the alternate and with channeling, meaning that only the correct numbers are found for each cell. But, because of the long running times, we think that there could be ghost backtracks which are not captured by the program.
-
-**The *CHR* implementation:**
-
 We can immediately see that the results of CHR are a lot slower than those from _ECLiPSe_. But, there are some exceptions where the alternative in CHR performs better (e.g. Clue 17). We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the simple at extra2. Because of the high amount of backtracks in _ECLiPSe_ and inferences in CHR, we assume this has to do with the order of the propagation being less favorable.
 
-**Conclusion**
+### Conclusion
 
-The first thing we notice, solely based on our experiments, is that the implementation in _ECLiPSe_ is way faster than the CHR implementation. The combination with channeling is slower than CHR but only in one case faster than the _ECLiPSe_ implementation.
+The first thing we notice, solely based on our experiments, is that the implementation in _ECLiPSe_ is a lot faster than the CHR implementation. The combination with channeling is slower than CHR but only in one case faster than the _ECLiPSe_ implementation.
 
 Personally, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
-
-// TODO: Ik zou precies die bespreking en de afbeeldingen samen zetten. En mag meer besproken worden denkik.
 
 # SHIKAKU
 
@@ -321,18 +338,27 @@ We modeled this implementation pretty similar to the CHR implementation of Sudok
 Or more concretely, we introduce two new constraints, `rect/2` and `rect/3` where `rect/2` contains as second argument a list of X and Y coordinates of the upper left corner in combination with its width and height.
 First, a `rect/2` will be created for each given point, with a list of all possible that could fit at that position.
 Then, the propagate constraint is initiated, which starts the propagation process where a possible rectangle from `rect/2` is proposed as a `rect/3`  constraint.
-And to prevent overlapping rectangles, we have constraints that passively check for overlaps between proposed `rect/3` of actively filter possible rectangles out of other `rect/2`.
 
-For the alternate view, we introduced yet another constraint `rect/5` to contain a Top, Left, Bottom and Right value.
-We still contain the `rect/3` constraint to be able to use the nice print function that was proposed within the assignment for printing Shikaku.
+	propagate, rect(Point, Possible) #passive
+	    <=>
+	    member((Cor, Size),Possible), rect(Point,Cor,Size), propagate.
+
+To prevent overlapping rectangles, we have constraints that passively check for overlaps between proposed `rect/3` or actively filter possible rectangles out of other `rect/2`.
+
+For the alternate view, we introduced yet another constraint `rect/5` to represent the rectangles with the 4 coordinates as explained in the _ECLiPSe_ implementation.
+However, we still contain the `rect/3` constraint to be able to use the nice print function that was proposed within the assignment for printing Shikaku.
 
 ## EXPERIMENTS SET-UP
 
 The set-up is similar as in  the Sudoku set-up, however here we didn't do channeling (as normally there wouldn't even have been two viewpoints) and the puzzles are in a different file (puzzles.pl).
 When opening the CHR or eclipse implementation in the correct GUI, the solve/1 or solve_all/0 predicates can be used to solve a specific or all puzzles respectively.
 
-## RESULTS
-**_ECLiPSe_**
+## DISCUSSION
+
+Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio. By putting them in a table, we could add the backtracks or inferences respectively.
+
+### _ECLiPSe_
+
 
 ![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
 
@@ -346,8 +372,11 @@ p(5,5) | 350,956           | 25996             | 0,187          | 1
 p(6,1) | 177,872           | 4330              | 0,297          | 0
 Table XXX: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
 
+We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model. Which is what we believe to be the main reason for the difference in speed.
 
-**_CHR_**
+Another reason for their difference in the search tree is that there are simply different values to be found.
+
+### _CHR_
 
 ![Results of Shikaku CHR implementation up to problem p(4,5)\label{shikaku_chr_chart}](images/shikaku_chr_chart.png "Results of Shikaku CHR implementation")
 
@@ -361,25 +390,13 @@ p(5,5) | 57,242            | 366 411 206       | 63,839         | 725 171 392
 p(6,1) | 156,980           | 982 498 648       | 124,253        | 1 354 737 953
 Table XXX: The last 6 results of Shikaku CHR with the normal and the alternate viewpoint
 
-## DISCUSSION
-
-Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio. By putting them in a table, we could add the backtracks or inferences respectively.
-
-**The _ECLiPSe_ implementation:**
-
-We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model. Which is what we believe to be the main reason for the difference in speed.
-
-Another reason for their difference in the search tree is that there are simply different values to be found.
-
-**The *CHR* implementation:**
-
 Again, the CHR implementation is slower than the _ECLiPSe_, until we reach problem p(5,1) where we see that the CHR implementation is faster than the normal viewpoint of the _ECLiPSe_ implementation.
 
-in CHR we also see that the alternative viewpoint is usually faster than the normal viewpoint. However, it is interesting to see that in CHR the difference between the different viewpoints is **much** smaller!
+In CHR we also see that the alternative viewpoint is usually faster than the normal viewpoint. However, it is interesting to see that in CHR the difference between the different viewpoints is **much** smaller!
 
 Another interesting thing we notice, is that the amount of inferences does not necessary reflect the time needed. A larger amount of inferences is usually in line with a longer time. But we can see that the amount of inferences in the alternative seems higher while it does achieve lower times.
 
-**Conclusion**
+### Conclusion
 
 The difference a different viewpoint can make really flourishes in this example, as the different viewpoint in the _ECLiPSe_ implementation has a large speed increase.
 
@@ -397,6 +414,7 @@ We found it a fun challenge to allow for more sizes of Sudoku, and the alternati
 
 We have experienced first-hand that debugging the CLP can be a challenge, but that the needed code remains surprisingly short without compromising for the readability.
 We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed.
+This is something that we didn't take enough into account when we started the assignment, but became apparent as we did more experiments to explore the differences.
 We learned that a creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint.
 And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance in CHR.
 
@@ -422,27 +440,32 @@ Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tek
 
 Intro:
 
-* In the conclusion you give a critical reflection on your work. What are the strong points? and the weak points? What are the lessons learned?
+* In the conclusion you give a critical reflection on your work. What are the strong points? and the weak points? What are the lessons learned? -> arent thest already in there? D:
 
 2.1:
 
 * What are the criteria you would use to judge whether a viewpoint is a
-good one or not?
+good one or not? ->  Dit vindk een moeilijkem kzou zeggen, als een viewpoint intiutief is, en bijgevolg in compact verstaanbare code duidelijk te maken is,, en langs de andere kant als die snel is he
 
 2.2:
 
-* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests?
+* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests? - lots more have happened, see text under sudoku
  ->Mssn nog iets over: https://docs.google.com/spreadsheets/d/104v0hoB6St5OcGLtnciMYNh6vDZ2OritDcx8gM066NI/edit#gid=1346877380
 
 * What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
+Over Extra 2 in sudoku heb ik al iets gezegd, misschien dat dat er nog meer letterlijk in moet, en de rest, tjah, meestal slechte propogation, en de kans op slechte increased naar gelang da er meer mogelijkhede zijn he
+(hoewel da de 25x25 praktisch geen backtracks nodig heeft, ik denk dada gewoon heel simpele puzzles zijn, en omdat diezo groot zijn er heel snel te prunen valt op mogelijke waarden)
 * alle XXX onder tables vervangen met actual table references D:
 
 3.3.1:
 
-* Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil?
+* Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil? - sjah, moet nog eens fatsoenlijk opgezocht worden D:
 * Discuss the impact of the different search strategies.
 
 3.3.2:
 
-* 3. Describe how you deal with constraint propagation, and what kind(s) of propagation you support. Are the constraints passive or active? Try to have active constraints if possible.
+* 3. Describe how you deal with constraint propagation, and what kind(s) of propagation you support. Are the constraints passive or active? Try to have active constraints if possible. - das een beetje hetzelfde als derboven he
 * 5. Propose some additional constraints that may speed up solving, and implement a at least 2 of them. -> Wat bedoelt ze hier mee? Gaat over Shikaku, 2 extra constraints? :/
+ehm, tjah, 2 extra contraints toevoegenmaar in het testen heb ik er veel andere toegevoegdvaak redundant constraints
+als die constraints in grote hoeveelheden filteren, versnellen die, maar anders zorgen die voor een hogere inference (omdat dat weer iets extra is waarop gechecked moet worden) en dan versnellen die niet
+ik dacht vb kijken of dat er nog maar 1 element in de lijst zit bij possible values, dada het vertraagde wegens extra checks terwijl ik dacht dada zou versnellen door strengere contraints.

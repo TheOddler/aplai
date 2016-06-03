@@ -401,3 +401,63 @@ Required 92069 backtracks
 Solving: extra1
 Success, time = 1803.59
 Required 14589995 backtracks
+Solving: extra2
+Success, time = 1485.051
+Required 8590409 backtracks
+Solving: extra3
+Success, time = 169.152
+Required 1445509 backtracks
+Solving: extra4
+Success, time = 103.226
+Required 847969 backtracks
+Solving: inkara2012
+Success, time = 3.35399999999981
+Required 18889 backtracks
+Solving: clue18
+Success, time = 26.5830000000001
+Required 143683 backtracks
+Solving: clue17
+Success, time = 126.064
+Required 848842 backtracks
+Solving: sudowiki_nb28
+Success, time = 38.002
+Required 227497 backtracks
+Solving: sudowiki_nb49
+Success, time = 4.41499999999996
+Required 20151 backtracks
+Solving: sudoku_16x16
+Success, time = 0.0
+Required 0 backtracks
+Solving: sudoku_25x25
+Success, time = 0.0470000000000255
+Required 0 backtracks
+
+--- largest,indomain ---
+Solving: verydifficult
+Success, time = 0.0
+Required 1 backtracks
+Solving: expert
+Success, time = 0.188000000000001
+Required 842 backtracks
+Solving: lambda
+Success, time = 50.997
+Required 433847 backtracks
+Solving: hard17
+Success, time = 27.097
+Required 159819 backtracks
+Solving: symme
+Success, time = 0.576999999999998
+Required 2141 backtracks
+Solving: eastermonster
+Success, time = 1.857
+Required 8741 backtracks
+Solving: tarek_052
+Success, time = 1.139
+Required 4687 backtracks
+Solving: goldennugget
+Success, time = 12.043
+Required 63837 backtracks
+Solving: coloin
+Success, time = 2.777
+Required 12575 backtracks
+[Stopped due to unable to finish within a reasonable amount of time]

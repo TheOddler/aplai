@@ -260,18 +260,47 @@ We can also noticed that only the classical viewpoint uses backtracks.
 Which could mean that the constraints are stronger in the alternate viewpoint and with channeling, meaning that only the correct numbers are found for each cell.
 But, because of the long running times, we think that there could be ghost backtracks which are not captured by the program.
 
-With _ECLiPSE_, there are a lot of search parameters that you can choose from
-// TODO **zetten we die hier allemaal met uitleg?**
+With _ECLiPSE_, there are a lot of search parameters that you can choose from.
+The following are the possible variable selection strategies:
+* _input order_: Variables are considered in the order that they were passed to the search predicate.
+* _anti first fail_: Variables with the largest domain are prioritized.
+* _first fail_ : Variables with the smallest domain are prioritized.
+* _occurrence_: Variables that have the largest amount of constraints associated with them are prioritized.
+* _most constrained_: Selects the variable with the smallest domain. If multiple of those exist, one with the most associated constraints is selected.
+* _max regret_ : Selects the variables with the largest difference between the two smallest values in the domain.
+* _smallest_ : Variables with the smallest elements in their domain are prioritized.
+* _largest_: Variables with the largest elements in their domain are prioritized.
+
+Besides selection strategies, there are also the following choice methods that we tested:
+* _indomain_: Values are tried in order and failed values are *not* removed.
+* _indomain max_: Values are tried in decreasing order and failed values are removed.
+* _indomain middle_: Values are tried from the middle out and ailed values are removed.
+* _indomain min_: Values are tried in increasing order and failed values are removed.
+* _indomain random_: Values are selected from the domain at random.
+* _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
+
+There are also the reverse methods of above functions.
+We did not test those as we assumed similar averaged results or results that are strongly dependent per puzzle.
 
 To test which strategy gives us the best result, we decided to run them all on our primary implementation.
-To get an apples-to-apples comparison, we selected one variable assignment (e.g. indomain) strategy to test all variable selection (e.g. input_order) strategies and visa versa.
+To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. input_order) strategies and visa versa.
 
-// TODO get charts from
-https://docs.google.com/spreadsheets/d/1tK9kzdW0TNtewz--Ee8UDpDL9Ls8Bkrt4dGVuO1EgYg/edit#gid=1346877380
+First we started by running all the variable selection strategies.
+In figure \ref{variable_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
+Option Smallest and Largest are not in this list because of their disproportional amount of backtracks (average: 1590133,33 backtracks).
+We choose to visualize the backtracks because they are usually strongly correlated to the running time.
 
-We can clearly see the importance of these settings from our empirical results.
+![Sudoku variable selection comparison \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
+
+Based on these empirical results, we can already see the importance of these settings.
+For our application, the best selection methods are most_constraint, first_fail and anti_first_fail with an average of 957,17 backtracks.
+The worst selection methods are smallest and largest, with an earlier noted amount of backtracks.
+
+// TODO run experiments on the choice
+
+
 For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
-But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but the propagation order was bad for that puzzle.
+But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but rather the propagation order was bad for that puzzle.
 
 // TODO more conclusions?
 
@@ -281,13 +310,24 @@ With CHR, the difference in results is much lower which allows all results to st
 
 ![Results of Sudoku CHR implementation. Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time\label{sudoku_chr_all}](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
 
-We can immediately see that the results of CHR are a lot slower than those from _ECLiPSe_. But, there are some exceptions where the alternative in CHR performs better (e.g. Clue 17). We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the simple at extra2. Because of the high amount of backtracks in _ECLiPSe_ and inferences in CHR, we assume this has to do with the order of the propagation being less favorable.
+We can immediately see that the results of CHR are a lot slower than those from _ECLiPSe_.
+But, there are some exceptions where the alternative in CHR performs better (e.g. Clue 17).
+We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the simple at extra2.
+Because of the high amount of backtracks in _ECLiPSe_ and inferences in CHR, we assume this has to do with the order of the propagation being less favorable.
 
 ### Conclusion
+A different viewpoint can have a different effect in both CHR and ECLiPSe dependent on its implementation.
+The difference shows in the amount of backtracks and the overall performance.
+These empirical results show a first parameter to consider a viewpoint good or bad.
+If it gets better results without compromising for a later exponential increase in resource dependence, it should be considered rather good.  
+However, to really consider whether a viewpoint is good or bad, we'd like took at more than just the results.
+In our opinion, a viewpoint should also be intuitive to understand and expressed in compact but readable code.
 
-The first thing we notice, solely based on our experiments, is that the implementation in _ECLiPSe_ is a lot faster than the CHR implementation. The combination with channeling is slower than CHR but only in one case faster than the _ECLiPSe_ implementation.
+Then, solely based on our experiments, we noticed that the implementation in _ECLiPSe_ is a lot faster than the CHR implementation.
+However, we do not know whether this is inherit to the difference between _ECLiPSe_ and CHR, whether this is specific to this problem or whether we made implementation errors that should otherwise give the opposite result.
+Furthermore, we saw that the combination with channeling is slower than CHR but only in one case faster than the _ECLiPSe_ implementation.
 
-Personally, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
+And as a finale note, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
 
 # SHIKAKU
 
@@ -446,6 +486,7 @@ Intro:
 
 * What are the criteria you would use to judge whether a viewpoint is a
 good one or not? ->  Dit vindk een moeilijkem kzou zeggen, als een viewpoint intiutief is, en bijgevolg in compact verstaanbare code duidelijk te maken is,, en langs de andere kant als die snel is he
+ - staat voorlopig bij de algemene conclusie van Sudoku
 
 2.2:
 

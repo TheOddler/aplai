@@ -65,12 +65,12 @@ When looking at the puzzles we had to solve for this assignment, Sudoku and Shik
 * Both puzzles require some search, as there are no known set of constraints that can solve any puzzle, and ECLiPSE has very nice support for this with very powerful propagation support.
 * The build-in array syntax gave a very natural way of reasoning about the constraints and specifying them.
 * The for-loop support gave a very nice way to specify constraints on the cells
-* The `ic` libary provided some very nice constraints (e.i. alldifferent)
+* The `ic` libary provided some very nice constraints (e.g. alldifferent)
 
 There are however also some drawbacks:
 
 * Some functions require grounded variables, and it is not always immediately clear which these are. ECLiPSe allows variables to have a domain, but Prolog doesn't always agree with this, which can be confusing at times.
-* The required running time of a program can vary greatly on only slight changes in the code. As there is no way, to our knowledge, to see the propagation that is happening, nor are there any profiling tools, it is very hard to optimize the constraints.
+* The required running time of a program can vary greatly on only slight changes in the code. As there is no way, to our knowledge, to see the propagation that is happening, nor are there any profiling tools, it is very hard to optimize and debug the constraints.
 
 **CHR** is much more basic than ECLiPSE.
 It requires much more to be hand-crafted.
@@ -268,18 +268,18 @@ The following are the possible variable selection strategies:
 * _anti first fail_: Variables with the largest domain are prioritized.
 * _first fail_ : Variables with the smallest domain are prioritized.
 * _occurrence_: Variables that have the largest amount of constraints associated with them are prioritized.
-* _most constrained_: Selects the variable with the smallest domain. If multiple of those exist, one with the most associated constraints is selected.
+* _most constrained_: Selects the variable with the smallest domain. If multiple of those exist, one with the most associated constraints is selected.
 * _max regret_ : Selects the variables with the largest difference between the two smallest values in the domain.
 * _smallest_ : Variables with the smallest elements in their domain are prioritized.
 * _largest_: Variables with the largest elements in their domain are prioritized.
 
 Besides selection strategies, there are also the following choice methods that we tested:
-* _indomain_: Values are tried in order and failed values are *not* removed.
-* _indomain max_: Values are tried in decreasing order and failed values are removed.
-* _indomain middle_: Values are tried from the middle out and failed values are removed.
-* _indomain min_: Values are tried in increasing order and failed values are removed.
-* _indomain random_: Values are selected from the domain at random and failed values are removed.
-* _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
+* _indomain_: Values are tried in order and failed values are *not* removed.
+* _indomain max_: Values are tried in decreasing order and failed values are removed.
+* _indomain middle_: Values are tried from the middle out and failed values are removed.
+* _indomain min_: Values are tried in increasing order and failed values are removed.
+* _indomain random_: Values are selected from the domain at random and failed values are removed.
+* _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
 
 There are also the reverse methods of above functions.
 We did not test those as we assumed similar averaged results or results that are strongly dependent per puzzle.

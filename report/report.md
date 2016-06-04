@@ -248,19 +248,25 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 ### ECLiPSe
 
 The first thing we noticed is that our alternate viewpoint is a lot slower than the first one.
-It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time. (as seen in the results on the image below)
+It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time. (As show in the results on figure \ref{sudoku_clp_chart2})
+
+// TODO Vincent: we tonen hier alleen resultaten voor de alt, niet voor de normal, hoe kunde dan zien dat die van de alt veel slechter zijn?
 
 ![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
 
 Furthermore, we noticed that the channeling didn't help our primary viewpoint much to gain speed.
 In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
-But we are unsure why exactly this Sudoku puzzle appears so hard.
+We believe that ECLiPSe can do sufficient propagation on the simple viewpoint, and that adding the channeling with extra constraint only makes ECLiPSe waste time on doing more unnecessary propagation.
+This leads to worse times for most puzzles, however Extra2 seems to gain a lot from this extra propagation.
+We are unsure what exactly makes Extra2 special compared to the other problems.
 
 ![Comparison between ECLiPSE and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
 
-We can also noticed that only the classical viewpoint uses backtracks.
-Which could mean that the constraints are stronger in the alternate viewpoint and with channeling, meaning that only the correct numbers are found for each cell.
-But, because of the long running times, we think that there could be ghost backtracks which are not captured by the program.
+Where we do see an improvement is in the number of needed backtrack.
+Only the classical viewpoint needs backtracks, the alternative seems to be able to resolve everything using only shallow backtracks or none at all.
+Of course the channeled version then also doesn't require backtracking.
+This could mean that the constraints are stronger in the alternate viewpoint (and thus also with channeling), meaning that only the correct numbers are found for each cell.
+But, it seems that this stronger propagation actually uses more time than just backtracking occasionally.
 
 With _ECLiPSE_, there are a lot of search parameters that you can choose from.
 The following are the possible variable selection strategies:
@@ -294,6 +300,9 @@ We choose to visualize the backtracks because they are usually strongly correlat
 
 ![Sudoku variable selection comparison \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
 
+// TODO Vincent: Kapt die heel grote eens af, die van bijna 30 000 steekt er zo ver uit dat ge de rest nimeer kunt zien, beetje onleesbare grafiek :(
+	// mss zelfs die puzzel gewoon weg laten, en even in tekst zeggen dat die er niet in staat omdat die zo groot was, maar dat ge daar het zelfde in ziet als de rest: max_regret = crap
+
 Based on these empirical results, we can already see the importance of these settings.
 For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
 But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but rather the propagation order was bad for that puzzle.
@@ -308,6 +317,7 @@ In our previous result, we saw that it didn't give the best results.
 Our reasoning is that there is more optimization possible in this strategy so there would be a bigger difference visible within our choice strategy results.
 
 ![Sudoku choice strategy comparison \label{sudoku_choice_strategy_comparison.png}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
+// TODO vincent: zelfs als vorige grafiek
 
 Again we see that there is a difference.
 However, the difference is much smaller than with the variable selection strategies.
@@ -327,6 +337,8 @@ With CHR, the difference in results is much lower which allows all results to st
 
 ![Results of Sudoku CHR implementation. Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time\label{sudoku_chr_all}](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
 
+// TODO vincent: zie, deze is veel leesbaarder :D (TODO: verwijder deze comment :P)
+
 We can immediately see that the results of CHR are a lot slower than those from _ECLiPSe_.
 But, there are some exceptions where the alternative in CHR performs better (e.g. Clue 17).
 We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the simple at extra2.
@@ -344,7 +356,8 @@ Then, solely based on our experiments, we noticed that the implementation in _EC
 However, we do not know whether this is inherit to the difference between _ECLiPSe_ and CHR, whether this is specific to this problem or whether we made implementation errors that should otherwise give the opposite result.
 Furthermore, we saw that the combination with channeling is slower than CHR but only in one case faster than the _ECLiPSe_ implementation.
 
-And as a finale note, we felt it was easier to implement in _ECLiPSe_ rather than CHR.
+And as a finale note, we felt it was much easier to implement in _ECLiPSe_ rather than CHR.
+_ECLiPSe_ really lends itself perfectly to these kinds of puzzles, where CHR requires a lot more work.
 
 # SHIKAKU
 
@@ -421,6 +434,8 @@ By putting them in a table, we could add the backtracks or inferences respective
 
 ![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
 
+// TODO Vincent: weer zelfde probleem. Mss opsplitsen, dat ge de eerste tot p2,5 of p3,2 in apparte zet, en dan die andere in volgende grafiek?
+
 Puzzle | Normal time (sec) | Normal backtracks | Alt time (sec) | Alt backtracks
 -------|------------------:|------------------:|---------------:|---------------:
 p(5,1) | 22,090            | 2913              | 0,109          | 0
@@ -429,7 +444,7 @@ p(5,3) | 201,616           | 32366             | 0,078          | 0
 p(5,4) | 5,085             | 555               | 0,125          | 0
 p(5,5) | 350,956           | 25996             | 0,187          | 1
 p(6,1) | 177,872           | 4330              | 0,297          | 0
-Table XXX: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
+Table: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
 
 We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model.
 This is what we believe to be the main reason for the difference in speed.
@@ -454,7 +469,7 @@ p(5,3) | 44,311            | 273 118 213       | 193,563        | 2 280 734 323
 p(5,4) | 12,982            | 92 899 324        | 11,068         | 108 855 366
 p(5,5) | 57,242            | 366 411 206       | 63,839         | 725 171 392
 p(6,1) | 156,980           | 982 498 648       | 124,253        | 1 354 737 953
-Table XXX: The last 6 results of Shikaku CHR with the normal and the alternate viewpoint
+Table: The last 6 results of Shikaku CHR with the normal and the alternate viewpoint
 
 Again, the CHR implementation is slower than the _ECLiPSe_, until we reach problem p(5,1) where we see that the CHR implementation is faster than the normal viewpoint of the _ECLiPSe_ implementation.
 
@@ -480,8 +495,6 @@ The difference a different viewpoint can make really flourishes in this example,
 The second viewpoint also keeps an intuitive approach and does not really complicate the code.
 This, together with our empirical results, is why we would consider it a better viewpoint.
 
-//TODO more conclusions? D:
-
 # EXTRA
 
 While we didn't take one of the given options of the extra assignment, we did extend the given assignments:
@@ -496,8 +509,8 @@ We found it a fun challenge to allow for more sizes of Sudoku, and the alternati
 We have experienced first-hand that debugging the CLP can be a challenge, but that the needed code remains surprisingly short without compromising for the readability.
 We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed.
 This is something that we didn't take enough into account when we started the assignment, but became apparent as we did more experiments to explore the differences.
-We learned that a creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint.
-And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance in CHR.
+We learned that creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint.
+And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance, which was especially visible in CHR where our own propagation is less advanced than in ECLiPSe.
 
 In retrospect of the teamwork, we think that we managed to lower the workload by balancing our capacities.
 We attempted to distribute the different aspects of the assignment and used peer-programming of one of us got stuck at a problem.
@@ -519,29 +532,9 @@ TODO TODO TODO
 
 Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tekst):
 
-Intro:
-
-* In the conclusion you give a critical reflection on your work. What are the strong points? and the weak points? What are the lessons learned? -> arent thest already in there? D:
-
-2.1:
-
-* What are the criteria you would use to judge whether a viewpoint is a
-good one or not? -> staat voorlopig bij de algemene conclusie van Sudoku
-
-2.2:
-
-* Do you get different results when using different search heuristcs? for your 2 implementations? when using different viewpoints? using channeling? Why? -> Meer tests? - lots more have happened, see text under sudoku
- ->Mssn nog iets over: https://docs.google.com/spreadsheets/d/104v0hoB6St5OcGLtnciMYNh6vDZ2OritDcx8gM066NI/edit#gid=1346877380
-
-* What is/are the most difficult puzzle(s) for your programs? Can you explain why this is the case?
-Over Extra 2 in sudoku heb ik al iets gezegd, misschien dat dat er nog meer letterlijk in moet, en de rest, tjah, meestal slechte propogation, en de kans op slechte increased naar gelang da er meer mogelijkhede zijn he
-(hoewel da de 25x25 praktisch geen backtracks nodig heeft, ik denk dada gewoon heel simpele puzzles zijn, en omdat diezo groot zijn er heel snel te prunen valt op mogelijke waarden)
-* alle XXX onder tables vervangen met actual table references D:
-
 3.3.1:
 
 * Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil? - sjah, moet nog eens fatsoenlijk opgezocht worden D:
-* Discuss the impact of the different search strategies.
 
 3.3.2:
 

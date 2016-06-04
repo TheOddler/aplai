@@ -194,8 +194,9 @@ So for instance, if the same value occurs twice on the same row:
         <=> ColA \= ColB | false.
 
 This will cause the program to backtrack to our search (the `member\2` clause to be exact) and try a different number.
+These are passive constraints as they are only used to check the current assignment of values.
 
-Lastly we implemented some propagation rules.
+Lastly we implemented some active propagation rules.
 They check to see if there is a cell with a known number (so only one value is left in the list of possible values), and they check if there is another cell in the same row, column or block, and will remove that value from their possible values.
 For instance, for rows:
 
@@ -540,14 +541,6 @@ Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tek
 	* Wij hebben active constraints allemaal denkik, omdat we de ic library gebruiken die dit toe laat voor zover ik het begrijp :P --> wij gebruiken zo "#=" enal (met die #) die doen da precies :P
 
 * Tests zonder en met extra redundant constraint en bespreek verschil (niet zo veel in eclipse zekers? :P) Voor zowel eclipse als CHR (CHR merkte da meer zekers? Daar is minder fancy propagation)
-
-3.3.2:
-
-* 3. Describe how you deal with constraint propagation, and what kind(s) of propagation you support. Are the constraints passive or active? Try to have active constraints if possible. - das een beetje hetzelfde als derboven he
-* 5. Propose some additional constraints that may speed up solving, and implement a at least 2 of them. -> Wat bedoelt ze hier mee? Gaat over Shikaku, 2 extra constraints? :/
-ehm, tjah, 2 extra contraints toevoegenmaar in het testen heb ik er veel andere toegevoegdvaak redundant constraints
-als die constraints in grote hoeveelheden filteren, versnellen die, maar anders zorgen die voor een hogere inference (omdat dat weer iets extra is waarop gechecked moet worden) en dan versnellen die niet
-ik dacht vb kijken of dat er nog maar 1 element in de lijst zit bij possible values, dada het vertraagde wegens extra checks terwijl ik dacht dada zou versnellen door strengere contraints.
 
 EXTRA:
 Mss ook eens in eclipse "ic_global" importeren ipv gewoon "ic", maakt shit mss nog sneller :P

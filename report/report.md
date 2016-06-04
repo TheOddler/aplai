@@ -89,10 +89,12 @@ It consists of a a 9 by 9 board, divided in 3 by 3 blocks.
 Each cell must contain exactly one number between 1 and 9, and at the start some of these are filled in.
 Each column, row and block must contain all different numbers, so it's up to the player to find a configuration that works within these constraints (without of course changing the given numbers).
 
+![Sudoku board overview\label{sudoku_board}](images/sudoku_clp_chart2.png "Sudoku board overview")
+
 An alternative version of Sudoku works on any N by N grid.
 We implemented a version that supports any grid of `N = X^2`, where X is a whole number.
 So for instance, we support grids of 16 by 16 and 25 by 25.
-In the classic Sudoku there are 9 3 by 3 block, but in our case there are N X by X blocks.
+In the classic Sudoku there are 9 3 by 3 block (as seen on figure \ref{sudoku_board}), but in our case there are N X by X blocks.
 We chose to do this alternative version as it also includes the _normal_ Sudoku, and gave our solution a nice extra dimension (pun intended).
 
 In this part we will discuss the implementation of our solver for Sudoku in _ECLiPSe_ and CHR.
@@ -350,6 +352,8 @@ And as a finale note, we felt it was easier to implement in _ECLiPSe_ rather tha
 
 Shikaku is a puzzle game where the board consists of a grid with in some cells a number.
 To solve the puzzle, you need to transform each number into a rectangle with a surface that equals the number, so that none of the rectangles overlap and the whole board is filled.
+
+![Empty Shikaku board on the left and the solution on the right\label{shikaku_board}](images/shikaku_explained.png "Empty Shikaku board on the left and the solution on the right")
 
 The assignment stated that we had to create a single viewpoint.
 However during the implementation we tried a second slightly different one as well, as we were not satisfied with the speed of our original viewpoint.

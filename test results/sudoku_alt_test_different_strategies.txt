@@ -1,0 +1,170 @@
+Tests results of the alternate implementation of sudoku in ECLiPSe
+We did not test every single case, but did samples with the strategies that had most different results in the classic implementation
+
+-- occurence and indomain --
+Solving with alternate: verydifficult
+Success, time = 0.0779999999999959
+Required 0 backtracks
+Solving with alternate: expert
+Success, time = 0.655000000000001
+Required 0 backtracks
+Solving with alternate: lambda
+Success, time = 5.616
+Required 0 backtracks
+Solving with alternate: hard17
+Success, time = 12.589
+Required 0 backtracks
+Solving with alternate: symme
+Success, time = 6.396
+Required 0 backtracks
+Solving with alternate: eastermonster
+Success, time = 6.80200000000001
+Required 0 backtracks
+Solving with alternate: tarek_052
+Success, time = 0.60799999999999
+Required 0 backtracks
+Solving with alternate: goldennugget
+Success, time = 9.14200000000001
+Required 0 backtracks
+Solving with alternate: coloin
+Success, time = 14.914
+Required 0 backtracks
+Solving with alternate: extra1
+Success, time = 0.513999999999996
+Required 0 backtracks
+Solving with alternate: extra2
+Success, time = 56.067
+Required 0 backtracks
+Solving with alternate: extra3
+Success, time = 5.83499999999998
+Required 0 backtracks
+Solving with alternate: extra4
+Success, time = 16.646
+Required 0 backtracks
+Solving with alternate: inkara2012
+Success, time = 24.258
+Required 0 backtracks
+Solving with alternate: clue18
+Success, time = 24.71
+Required 0 backtracks
+Solving with alternate: clue17
+Success, time = 38.47
+Required 0 backtracks
+Solving with alternate: sudowiki_nb28
+Success, time = 148.045
+Required 0 backtracks
+Solving with alternate: sudowiki_nb49
+Success, time = 15.647
+Required 0 backtracks
+
+-- input order and indomain --
+Solving with alternate: verydifficult
+Success, time = 0.0619999999999998
+Required 0 backtracks
+Solving with alternate: expert
+Success, time = 0.655
+Required 0 backtracks
+Solving with alternate: lambda
+Success, time = 5.725
+Required 0 backtracks
+Solving with alternate: hard17
+Success, time = 12.87
+Required 0 backtracks
+Solving with alternate: symme
+Success, time = 6.318
+Required 0 backtracks
+Solving with alternate: eastermonster
+Success, time = 6.865
+Required 0 backtracks
+Solving with alternate: tarek_052
+Success, time = 0.607999999999997
+Required 0 backtracks
+Solving with alternate: goldennugget
+Success, time = 9.313
+Required 0 backtracks
+Solving with alternate: coloin
+Success, time = 14.508
+Required 0 backtracks
+Solving with alternate: extra1
+Success, time = 0.530999999999999
+Required 0 backtracks
+Solving with alternate: extra2
+Success, time = 56.597
+Required 0 backtracks
+Solving with alternate: extra3
+Success, time = 5.741
+Required 0 backtracks
+Solving with alternate: extra4
+Success, time = 16.817
+Required 0 backtracks
+Solving with alternate: inkara2012
+Success, time = 23.946
+Required 0 backtracks
+Solving with alternate: clue18
+Success, time = 24.507
+Required 0 backtracks
+Solving with alternate: clue17
+Success, time = 38.502
+Required 0 backtracks
+Solving with alternate: sudowiki_nb28
+Success, time = 147.093
+Required 0 backtracks
+Solving with alternate: sudowiki_nb49
+Success, time = 15.257
+Required 0 backtracks
+
+-- occurence and indomain split --
+Solving with alternate: verydifficult
+Success, time = 0.0779999999999998
+Required 0 backtracks
+Solving with alternate: expert
+Success, time = 0.686
+Required 0 backtracks
+Solving with alternate: lambda
+Success, time = 6.178
+Required 0 backtracks
+Solving with alternate: hard17
+Success, time = 13.837
+Required 0 backtracks
+Solving with alternate: symme
+Success, time = 6.537
+Required 0 backtracks
+Solving with alternate: eastermonster
+Success, time = 7.129
+Required 0 backtracks
+Solving with alternate: tarek_052
+Success, time = 0.670999999999999
+Required 0 backtracks
+Solving with alternate: goldennugget
+Success, time = 9.984
+Required 0 backtracks
+Solving with alternate: coloin
+Success, time = 15.538
+Required 0 backtracks
+Solving with alternate: extra1
+Success, time = 0.545999999999999
+Required 0 backtracks
+Solving with alternate: extra2
+Success, time = 64.116
+Required 0 backtracks
+Solving with alternate: extra3
+Success, time = 6.02200000000001
+Required 0 backtracks
+Solving with alternate: extra4
+Success, time = 17.784
+Required 0 backtracks
+Solving with alternate: inkara2012
+Success, time = 25.413
+Required 0 backtracks
+Solving with alternate: clue18
+Success, time = 25.272
+Required 0 backtracks
+Solving with alternate: clue17
+Success, time = 44.195
+Required 0 backtracks
+Solving with alternate: sudowiki_nb28
+Success, time = 161.181
+Required 0 backtracks
+Solving with alternate: sudowiki_nb49
+Success, time = 16.567
+Required 0 backtracks

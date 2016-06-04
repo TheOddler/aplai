@@ -274,18 +274,18 @@ The following are the possible variable selection strategies:
 Besides selection strategies, there are also the following choice methods that we tested:
 * _indomain_: Values are tried in order and failed values are *not* removed.
 * _indomain max_: Values are tried in decreasing order and failed values are removed.
-* _indomain middle_: Values are tried from the middle out and ailed values are removed.
+* _indomain middle_: Values are tried from the middle out and failed values are removed.
 * _indomain min_: Values are tried in increasing order and failed values are removed.
-* _indomain random_: Values are selected from the domain at random.
+* _indomain random_: Values are selected from the domain at random and failed values are removed.
 * _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
 
 There are also the reverse methods of above functions.
 We did not test those as we assumed similar averaged results or results that are strongly dependent per puzzle.
 
 To test which strategy gives us the best result, we decided to run them all on our primary implementation.
-To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. input_order) strategies and visa versa.
+To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. occurence) strategies and visa versa.
 
-First we started by running all the variable selection strategies.
+First we started by running all the variable selection strategies (all results are in included in extra 'txt' files in the results folder).
 In figure \ref{variable_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
 Option Smallest and Largest are not in this list because of their disproportional amount of backtracks (average: 1590133,33 backtracks).
 We choose to visualize the backtracks because they are usually strongly correlated to the running time.
@@ -293,16 +293,31 @@ We choose to visualize the backtracks because they are usually strongly correlat
 ![Sudoku variable selection comparison \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
 
 Based on these empirical results, we can already see the importance of these settings.
+For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
+But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but rather the propagation order was bad for that puzzle.
 For our application, the best selection methods are most_constraint, first_fail and anti_first_fail with an average of 957,17 backtracks.
 The worst selection methods are smallest and largest, with an earlier noted amount of backtracks.
 
-// TODO run experiments on the choice
+As mentioned previously, we also ran all the choice strategies (all results are in included in extra 'txt' files in the results folder).
+In figure \ref{sudoku_choice_strategy_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
+For aesthetic reasons, we abbreviated indomain to ind in the chart legend.
+For the default variable selection, we used occurrence.
+In our previous result, we saw that it didn't give the best results.
+Our reasoning is that there is more optimization possible in this strategy so there would be a bigger difference visible within our choice strategy results.
 
+![Sudoku choice strategy comparison \label{sudoku_choice_strategy_comparison.png}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
 
-For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
-But out of this experiment, we can say that it was not necessarily a more difficult puzzle, but rather the propagation order was bad for that puzzle.
+Again we see that there is a difference.
+However, the difference is much smaller than with the variable selection strategies.
+For our application, the best choice strategies are indomain, indomain_split and indomain_max with an average of 2544,11 backtracks.
+The worst choice strategy is indomain_middle, with an average of 4067,89 backtracks.
+We were a little surprised by this result, as we assumed the regular indomain would perform worse since it does not remove failed values.
 
-// TODO more conclusions?
+We also ran these experiments in the alternate viewpoint.
+However, there the difference in results was only up to 0,200 sec.
+So we assume that the choice options do not make a difference in our alternate viewpoint and that the time difference has to do with other programs running at that time.
+The reason that it does not affect the alternate viewpoint is probably because the alternate viewpoint does not have any backtracks.
+Since the options are there to influence the propagation over backtracks, it makes sense that we do not see a difference.
 
 ### CHR
 
@@ -395,10 +410,10 @@ When opening the CHR or eclipse implementation in the correct GUI, the solve/1 o
 
 ## DISCUSSION
 
-Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio. By putting them in a table, we could add the backtracks or inferences respectively.
+Because the last 6 methods had the highest time values, we cut them off and put them in a table to keep the chart ratio.
+By putting them in a table, we could add the backtracks or inferences respectively.
 
 ### _ECLiPSe_
-
 
 ![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
 
@@ -412,9 +427,16 @@ p(5,5) | 350,956           | 25996             | 0,187          | 1
 p(6,1) | 177,872           | 4330              | 0,297          | 0
 Table XXX: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
 
-We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model. Which is what we believe to be the main reason for the difference in speed.
+We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model.
+This is what we believe to be the main reason for the difference in speed.
 
 Another reason for their difference in the search tree is that there are simply different values to be found.
+
+In the Sudoku implementation, we also discussed a difference in search heuristics.
+One of the results that seemed odd to us is the fact that the performance of the regular indomain was among the best.
+Because of this reason, we tested indomain versus indomain_split within this problem.
+And, as we expected, we can now clearly see that indomain_split gets better results with an average of 2410,21 backtracks while indomain got an average of 5544,64 backtracks.
+We think that this difference became more apparent because there is a larger backtrack set to go over in this problem compared to the sudoku problem.
 
 ### _CHR_
 
@@ -432,14 +454,29 @@ Table XXX: The last 6 results of Shikaku CHR with the normal and the alternate v
 
 Again, the CHR implementation is slower than the _ECLiPSe_, until we reach problem p(5,1) where we see that the CHR implementation is faster than the normal viewpoint of the _ECLiPSe_ implementation.
 
-In CHR we also see that the alternative viewpoint is usually faster than the normal viewpoint. However, it is interesting to see that in CHR the difference between the different viewpoints is **much** smaller!
+In CHR we also see that the alternative viewpoint is usually faster than the normal viewpoint.
+However, it is interesting to see that in CHR the difference between the different viewpoints is **much** smaller!
 
-Another interesting thing we notice, is that the amount of inferences does not necessary reflect the time needed. A larger amount of inferences is usually in line with a longer time. But we can see that the amount of inferences in the alternative seems higher while it does achieve lower times.
+Another interesting thing we notice, is that the amount of inferences does not necessary reflect the time needed.
+A larger amount of inferences is usually in line with a longer time.
+But we can see that the amount of inferences in the alternative seems higher while it does achieve lower times.
+
+Besides these tests, we also attempted to add redundant constraints to see what effect this would have on the implementation.
+We noticed that some give a clear speed advantage if they are able to make large search domain cuts.
+Another redundant constraint that we added selects automatically the last possible option:
+
+	last_of_list @ rect(Point,[(c(X1,Y1),s(W1,H1))])
+		<=> rect(Point,c(X1,Y1),s(W1,H1)).
+
+However, we can only see a slight increase of inferences with this constraint as it is yet another constraint to check and does not cut in the search domain.
 
 ### Conclusion
 
 The difference a different viewpoint can make really flourishes in this example, as the different viewpoint in the _ECLiPSe_ implementation has a large speed increase.
+The second viewpoint also keeps an intuitive approach and does not really complicate the code.
+This, together with our empirical results, is why we would consider it a better viewpoint.
 
+//TODO more conclusions? D:
 
 # EXTRA
 
@@ -485,8 +522,7 @@ Intro:
 2.1:
 
 * What are the criteria you would use to judge whether a viewpoint is a
-good one or not? ->  Dit vindk een moeilijkem kzou zeggen, als een viewpoint intiutief is, en bijgevolg in compact verstaanbare code duidelijk te maken is,, en langs de andere kant als die snel is he
- - staat voorlopig bij de algemene conclusie van Sudoku
+good one or not? -> staat voorlopig bij de algemene conclusie van Sudoku
 
 2.2:
 

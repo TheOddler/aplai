@@ -89,7 +89,7 @@ It consists of a a 9 by 9 board, divided in 3 by 3 blocks.
 Each cell must contain exactly one number between 1 and 9, and at the start some of these are filled in.
 Each column, row and block must contain all different numbers, so it's up to the player to find a configuration that works within these constraints (without of course changing the given numbers).
 
-![Sudoku board overview\label{sudoku_board}](images/sudoku_clp_chart2.png "Sudoku board overview")
+![Sudoku board overview\label{sudoku_board}](images/sudoku_explained.png "Sudoku board overview")
 
 An alternative version of Sudoku works on any N by N grid.
 We implemented a version that supports any grid of `N = X^2`, where X is a whole number.
@@ -251,13 +251,13 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 The first thing we noticed is that our alternate viewpoint is a lot slower than the first one.
 It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time. (As show in the results on figure \ref{sudoku_clp_chart2})
 
-// TODO Vincent: we tonen hier alleen resultaten voor de alt, niet voor de normal, hoe kunde dan zien dat die van de alt veel slechter zijn?
+![Results of Sudoku ECLiPSE primary implementation\label{sudoku_clp_chart1}](images/sudoku_clp_chart1.png "Results of Sudoku ECLiPSE primary implementation")
 
 ![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
 
 Furthermore, we noticed that the channeling didn't help our primary viewpoint much to gain speed.
 In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
-We believe that ECLiPSe can do sufficient propagation on the simple viewpoint, and that adding the channeling with extra constraint only makes ECLiPSe waste time on doing more unnecessary propagation.
+We believe that ECLiPSe can do sufficient propagation on the primary viewpoint, and that adding the channeling with extra constraint only makes ECLiPSe waste time on doing more unnecessary propagation.
 This leads to worse times for most puzzles, however Extra2 seems to gain a lot from this extra propagation.
 We are unsure what exactly makes Extra2 special compared to the other problems.
 
@@ -299,10 +299,7 @@ In figure \ref{variable_selection_comparison} you can see the overview of all se
 Option Smallest and Largest are not in this list because of their disproportional amount of backtracks (average: 1590133,33 backtracks).
 We choose to visualize the backtracks because they are usually strongly correlated to the running time.
 
-![Sudoku variable selection comparison \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
-
-// TODO Vincent: Kapt die heel grote eens af, die van bijna 30 000 steekt er zo ver uit dat ge de rest nimeer kunt zien, beetje onleesbare grafiek :(
-	// mss zelfs die puzzel gewoon weg laten, en even in tekst zeggen dat die er niet in staat omdat die zo groot was, maar dat ge daar het zelfde in ziet als de rest: max_regret = crap
+![Sudoku variable selection comparison. Note: we cut off max_regret at extra2 (original value 28716) \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
 
 Based on these empirical results, we can already see the importance of these settings.
 For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
@@ -317,8 +314,7 @@ For the default variable selection, we used occurrence.
 In our previous result, we saw that it didn't give the best results.
 Our reasoning is that there is more optimization possible in this strategy so there would be a bigger difference visible within our choice strategy results.
 
-![Sudoku choice strategy comparison \label{sudoku_choice_strategy_comparison.png}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
-// TODO vincent: zelfs als vorige grafiek
+![Sudoku choice strategy comparison. Note: for aesthetic reasons, indomain middle and max are cut from originally around 30000. \label{sudoku_choice_strategy_comparison.png}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
 
 Again we see that there is a difference.
 However, the difference is much smaller than with the variable selection strategies.
@@ -338,11 +334,9 @@ With CHR, the difference in results is much lower which allows all results to st
 
 ![Results of Sudoku CHR implementation. Note II: we cut off the Channeling at 200 sec in soduwiki_nb28 (with a value of 938,76 sec) deformed the chart. Note II: the alternative version wasn't able to solve the 25x25 within a reasonable time\label{sudoku_chr_all}](images/sudoku_chr_all.png "Results of Sudoku CHR implementation")
 
-// TODO vincent: zie, deze is veel leesbaarder :D (TODO: verwijder deze comment :P)
-
 We can immediately see that the results of CHR are a lot slower than those from _ECLiPSe_.
 But, there are some exceptions where the alternative in CHR performs better (e.g. Clue 17).
-We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the simple at extra2.
+We can see that the most difficult problems remain the same for both CHR and _ECLiPSe_ (e.g. sudowiki_nb28) and that in both cases the alternative outperforms the primary at extra2.
 Because of the high amount of backtracks in _ECLiPSe_ and inferences in CHR, we assume this has to do with the order of the propagation being less favorable.
 
 ### Conclusion
@@ -433,9 +427,7 @@ By putting them in a table, we could add the backtracks or inferences respective
 
 ### _ECLiPSe_
 
-![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668)\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
-
-// TODO Vincent: weer zelfde probleem. Mss opsplitsen, dat ge de eerste tot p2,5 of p3,2 in apparte zet, en dan die andere in volgende grafiek?
+![Results of Shikaku _ECLiPSe_ implementation up to problem p(4,5) and with p(4,1) cutoff (original value: 5,382) and p(4,5) (original value: 2,668). For even better visibility, we split up the chart. The left side is in milliseconds while the right side is in seconds.\label{shikaku_clp_chart}](images/shikaku_clp_chart.png "Results of Shikaku ECLiPSe implementation")
 
 Puzzle | Normal time (sec) | Normal backtracks | Alt time (sec) | Alt backtracks
 -------|------------------:|------------------:|---------------:|---------------:

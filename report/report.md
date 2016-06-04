@@ -534,7 +534,12 @@ Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tek
 
 3.3.1:
 
-* Explain which constraints you use and how they are expressed in your program. Are the constraints active or passive ones? -> Wat is het verschil? - sjah, moet nog eens fatsoenlijk opgezocht worden D:
+* Active/passive: Van ons zijn active want wij gebruiken de ic library en niet suspend library (en mss ook omdat we "seach/6" maar kzen niet zeker of dat echt verschil maakt daarin, labering zou ook ok zijn denkik misschien mogelijk eventueel). Ma kweet niet goed hoe da te beschrijven in de tekst dan :P
+	* Passive constraints zijn constraints die enkel gebruikt worden om te testen of een huidige toepassing van variabelen correct is
+	* Active constraints geven ook aanleiding tot propagation, dus door het aanpassen van één variabele worden die cosntraints gepropagate naar andere
+	* Wij hebben active constraints allemaal denkik, omdat we de ic library gebruiken die dit toe laat voor zover ik het begrijp :P --> wij gebruiken zo "#=" enal (met die #) die doen da precies :P
+
+* Tests zonder en met extra redundant constraint en bespreek verschil (niet zo veel in eclipse zekers? :P) Voor zowel eclipse als CHR (CHR merkte da meer zekers? Daar is minder fancy propagation)
 
 3.3.2:
 
@@ -543,3 +548,7 @@ Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tek
 ehm, tjah, 2 extra contraints toevoegenmaar in het testen heb ik er veel andere toegevoegdvaak redundant constraints
 als die constraints in grote hoeveelheden filteren, versnellen die, maar anders zorgen die voor een hogere inference (omdat dat weer iets extra is waarop gechecked moet worden) en dan versnellen die niet
 ik dacht vb kijken of dat er nog maar 1 element in de lijst zit bij possible values, dada het vertraagde wegens extra checks terwijl ik dacht dada zou versnellen door strengere contraints.
+
+EXTRA:
+Mss ook eens in eclipse "ic_global" importeren ipv gewoon "ic", maakt shit mss nog sneller :P
+Of mss alleen: ":- import alldifferent/1 from ic_global."

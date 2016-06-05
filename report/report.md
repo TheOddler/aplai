@@ -12,7 +12,7 @@ The goal of this assignment is to get practical experience with different CLP la
 This will be done by solving two different puzzle games with the languages two of three thought languages: _ECLiPSe_, _Constraint Handling Rules_ (_CHR_) and _Jess_.
 
 First we will do a short discussion of the CLP languages, explaining which we chose and why.
-We then discuss of our solver for the popular puzzle game Sudoku in both chosen languages, followed by a discussion our approach for solving Shikaku.
+We then discuss our solver for the popular puzzle game Sudoku in both chosen languages, followed by a discussion of our approach for solving Shikaku.
 Finally we will end with a conclusion regarding the assignment as a whole.
 
 \newpage
@@ -49,12 +49,13 @@ Unfortunately, most of them refer to exactly the same examples.
 
 ## Jess
 
-Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier.
+Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with user-friendly error messages, should make the development easier.
 It is free for academic use, but a license is needed for commercial use.
 And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
 
-However, the minor amount of available documentation, the trouble to get a working installation, the fact that it had not yet been introduced to us at the time of coding and the fact that it uses yet another language (JessML) instead of the already known Prolog syntax made Jess a less practical choice.
-Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
+However, we found less available documentation and had more trouble to get a working installation.
+Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_.
+And this seems to be even worse for Jess, where delegating to the host language (Java) is a common implementation.
 
 ## Which did we choose?
 
@@ -140,7 +141,7 @@ ECLiPSe has a very nice array syntax, so this was quite easy:
 
 Similarly we extract each block and add the `alldifferent` constraint.
 The `alldifferent` constraint from the `ic` library is an active constraint and the only one we use.
-All that's left then is starting the search.
+And then, all that's left is starting the search.
 
 ### Alternative view
 
@@ -244,7 +245,7 @@ We also included both search rules so it will first try either cell or rvc const
 
 ## EXPERIMENTS SET-UP
 
-To make the testing easier, we created a file "sudoku_ECLiPSe_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
+To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
 The file defines a method solve_all/0 which will loop over all the different Sudokus defined in the sudex_toledo, using default channeling method.
 You can also solve a specific puzzle by using solve/2 using the puzzle name and model ('simple', 'alt' or 'both') as arguments.
 Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
@@ -255,7 +256,7 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 
 ### ECLiPSe
 
-The first thing we noticed is that our alternate viewpoint is a lot slower than the first one.
+The first thing we noticed is that our alternate viewpoint is a lot slower than the first one (see figure \ref{sudoku_clp_chart1} and \ref{sudoku_clp_chart2}).
 It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time.
 (Results for this puzzle are therefore missing in figure \ref{sudoku_clp_chart2})
 
@@ -263,7 +264,7 @@ It was even that much slower that the 25x25 Sudoku wouldn't be solved within a r
 
 ![Results of Sudoku ECLiPSe alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSe alternate implementation")
 
-Furthermore, we noticed that the channeling didn't help our primary viewpoint to gain speed.
+Furthermore, we noticed that the channeling didn't help our primary viewpoint to gain speed (see figure \ref{sudoku_clp_chart3}).
 In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
 We believe that ECLiPSe can do sufficient propagation on the primary viewpoint, and that adding the channeling with extra constraint only makes ECLiPSe waste time on doing more unnecessary propagation.
 This leads to worse times for most puzzles, however Extra2 seems to gain a lot from this extra propagation.
@@ -271,9 +272,9 @@ We are unsure what exactly makes Extra2 special compared to the other problems.
 
 ![Comparison between ECLiPSe and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSe and Channeling")
 
-Where we do see an improvement is in the number of needed backtrack.
+Where we do see an improvement is in the number of needed backtracks.
 Only the classical viewpoint needs backtracks, the alternative seems to be able to resolve everything using only shallow backtracks or none at all.
-Of course the channeled version then also doesn't require backtracking.
+And, of course, the channeled version also doesn't require backtracking.
 This could mean that the constraints are stronger in the alternate viewpoint (and thus also with channeling), meaning that any incorrect number can be ruled out using only propagation.
 But, it seems that this stronger propagation actually uses more time compared to just doing some backtracking.
 
@@ -302,10 +303,10 @@ To test which strategy gives us the best result, we decided to run them all on o
 To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. occurrence) strategies and vice versa.
 
 First we started by running all the variable selection strategies (all results are in included in extra 'txt' files in the results folder).
-In figure \ref{variable_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
+In figure \ref{var_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
 Option Smallest and Largest are not in this list because of their disproportional amount of backtracks (average: 1590133,33 backtracks).
 
-![Sudoku variable selection comparison. Note: we cut off max_regret at extra2 (original value 28716) \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
+![Sudoku variable selection comparison. Note: we cut off max_regret at extra2 (original value 28716)\label{var_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
 
 Based on these empirical results, we can already see the importance of these settings.
 For example, at the chart where we compare the primary viewpoint with the channeling, we see that extra2 appears to be the most difficult chart.
@@ -314,13 +315,13 @@ For our application, the best selection methods are most_constraint, first_fail 
 The worst selection methods are smallest and largest, with an earlier noted amount of backtracks.
 
 As mentioned previously, we also ran all the choice strategies (all results are in included in extra 'txt' files in the results folder).
-In figure \ref{sudoku_choice_strategy_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
+In figure \ref{choice_strategy_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
 For aesthetic reasons, we abbreviated indomain to ind in the chart legend.
 For the default variable selection, we used occurrence.
-In our previous result, we saw that it didn't give the best results.
+In our previous results (see figure \ref{var_selection_comparison}), we saw that it didn't give the best results.
 Our reasoning is that there is more optimization possible in this strategy so there would be a bigger difference visible within our choice strategy results.
 
-![Sudoku choice strategy comparison. Note: for aesthetic reasons, indomain middle and max are cut from originally around 30000. \label{sudoku_choice_strategy_comparison.png}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
+![Sudoku choice strategy comparison. Note: for aesthetic reasons, indomain middle and max are cut from originally around 30000. \label{choice_strategy_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku choice strategy comparison")
 
 Again we see that there is a difference.
 However, the difference is much smaller than with the variable selection strategies.
@@ -330,7 +331,7 @@ We were a little surprised by this result, as we assumed the regular indomain wo
 
 We also ran these experiments in the alternate viewpoint.
 However, there the difference in results was only up to 0,200 sec.
-So we assume that the choice options do not make a difference in our alternate viewpoint and that the time difference has to do with other programs running at that time.
+So we assume that the choice options do not make a difference in our alternate viewpoint and that the time difference has to do with other programs running on the computer at that time.
 The reason that it does not affect the alternate viewpoint is probably because the alternate viewpoint does not have any backtracks.
 Since the options are there to influence the propagation over backtracks, it makes sense that we do not see a difference.
 
@@ -396,7 +397,7 @@ So as an additional constraint we **explicitly** specify that each rectangle con
 As with Sudoku, _ECLiPSe_ lend itself very well to this problem.
 We represented each rectangle as a X and Y coordinate for the upper left corner, and a Width and Height variable.
 Since each hint will give rise to exactly one rectangle, we simply iterated over the given hints, and create a single rectangle for each.
-Then it simply came down to defining the constraints which are all quite straightforward.
+Then it came down to defining the constraints which are all quite straightforward.
 Again we extensively use the `ic` library thus all our constraints are active constraints.
 
 The grid is simply assumed to start at coordinate 1,1 and end in Width,Height.
@@ -412,7 +413,7 @@ We believe this allowed _ECLiPSe_ to do better propagation, which could explain 
 
 We modeled this implementation pretty similar to the CHR implementation of Sudoku, whereas in Sudoku there was a list of possible coordinates while here we give a list of possible squares.
 Or more concretely, we introduce two new constraints, `rect/2` and `rect/3` where `rect/2` contains as second argument a list of X and Y coordinates of the upper left corner in combination with its width and height.
-First, a `rect/2` will be created for each given point, with a list of all possible that could fit at that position.
+First, a `rect/2` will be created for each given point, with a list of all possibilities that could fit at that position.
 Then, the propagate constraint is initiated, which starts the propagation process where a possible rectangle from `rect/2` is proposed as a `rect/3`  constraint.
 
 	propagate, rect(Point, Possible) #passive
@@ -448,15 +449,15 @@ p(5,5) | 350,956           | 25996             | 0,187          | 1
 p(6,1) | 177,872           | 4330              | 0,297          | 0
 Table: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
 
-We can see that the alternative view is much faster than the other methods.
+We can see that the alternative view is much faster than the other methods (see figure \ref{shikaku_clp_chart} and table 1).
 We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model.
 This is what we believe to be the main reason for the difference in speed.
 
 These results show the time when using the additional redundant constraint.
 When not using this constraint there is no significant difference for the smaller problems (those that are solved in less than a second or just a few seconds).
-For the bigger problems, those taking more than 100 seconds to solve, we do see that the redundant constraint gives some improvement.
-For problems p(5, 2), p(5, 3), p(5, 5) and p(6, 1) there is an improvement of 3.62, 14.03, 36.21 and 21.47 seconds respectively.
-There was however no difference in the number of backtracks, indicating that the extra constraint only manages to speed up shallow backtracks.
+For the bigger problems, those taking more than 100 seconds to solve, we do see that the redundant constraint is a little slower.
+For problems p(5, 2), p(5, 3), p(5, 5) and p(6, 1) there is a difference of 3.62, 14.03, 36.21 and 21.47 seconds respectively.
+There was however no difference in the number of backtracks, indicating that the extra constraint only made a difference in shallow backtracks.
 
 In the Sudoku implementation, we also discussed a difference in search heuristics.
 One of the results that seemed odd to us is the fact that the performance of the regular indomain was among the best.
@@ -478,7 +479,7 @@ p(5,5) | 57,242            | 366 411 206       | 63,839         | 725 171 392
 p(6,1) | 156,980           | 982 498 648       | 124,253        | 1 354 737 953
 Table: The last 6 results of Shikaku CHR with the normal and the alternate viewpoint
 
-Again, the CHR implementation is slower than the _ECLiPSe_, until we reach problem p(5,1) where we see that the CHR implementation is faster than the normal viewpoint of the _ECLiPSe_ implementation.
+Again, the CHR implementation is slower than the _ECLiPSe_ (see figure \ref{shikaku_chr_chart} and table 2), until we reach problem p(5,1) where we see that the CHR implementation is faster than the normal viewpoint of the _ECLiPSe_ implementation.
 
 In CHR we also see that the alternative viewpoint is usually faster than the normal viewpoint.
 However, it is interesting to see that in CHR the difference between the different viewpoints is **much** smaller!
@@ -489,12 +490,12 @@ But we can see that the amount of inferences in the alternative seems higher whi
 
 Besides these tests, we also attempted to add redundant constraints to see what effect this would have on the implementation.
 We noticed that some give a clear speed advantage if they are able to make large search domain cuts.
-Another redundant constraint that we added selects automatically the last possible option:
+A redundant constraint that we added selects automatically the last possible option:
 
 	last_of_list @ rect(Point,[(c(X1,Y1),s(W1,H1))])
 		<=> rect(Point,c(X1,Y1),s(W1,H1)).
 
-However, we can only see a slight increase of inferences with this constraint as it is yet another constraint to check and does not cut in the search domain.
+However, the gain strongly depends on the puzzle while the amount of inferences slightly increase as it is yet another constraint to check.
 
 ### Conclusion
 
@@ -522,7 +523,7 @@ We have experienced first-hand that debugging the CLP can be a challenge, but th
 We learned that different heuristics are strongly problem-dependent and can greatly influence the outcome speed.
 This is something that we didn't take enough into account when we started the assignment, but became apparent as we did more experiments to explore the differences.
 We learned that creating a different viewpoint, if not already better than the previous, can enlighten a new angle that improves the previous viewpoint.
-And we learned that some counter-intuitive measures, like redundant rules can greatly improve the overall performance, which was especially visible in CHR where our own propagation is less advanced than in ECLiPSe.
+And we learned that some counter-intuitive measures, like redundant rules can sometimes improve the overall performance, which was especially visible in CHR where our own propagation is less advanced than in ECLiPSe.
 
 In retrospect of the teamwork, we think that we managed to lower the workload by balancing our capacities.
 We attempted to distribute the different aspects of the assignment and used peer-programming of one of us got stuck at a problem.

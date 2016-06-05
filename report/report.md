@@ -250,13 +250,14 @@ Every time a solve method is called, the name of the method, name of the puzzle,
 ### ECLiPSe
 
 The first thing we noticed is that our alternate viewpoint is a lot slower than the first one.
-It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time. (As show in the results on figure \ref{sudoku_clp_chart2})
+It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time.
+(Results for this puzzle are therefore missing in figure \ref{sudoku_clp_chart2})
 
 ![Results of Sudoku ECLiPSE primary implementation\label{sudoku_clp_chart1}](images/sudoku_clp_chart1.png "Results of Sudoku ECLiPSE primary implementation")
 
 ![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
 
-Furthermore, we noticed that the channeling didn't help our primary viewpoint much to gain speed.
+Furthermore, we noticed that the channeling didn't help our primary viewpoint to gain speed.
 In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
 We believe that ECLiPSe can do sufficient propagation on the primary viewpoint, and that adding the channeling with extra constraint only makes ECLiPSe waste time on doing more unnecessary propagation.
 This leads to worse times for most puzzles, however Extra2 seems to gain a lot from this extra propagation.
@@ -267,8 +268,8 @@ We are unsure what exactly makes Extra2 special compared to the other problems.
 Where we do see an improvement is in the number of needed backtrack.
 Only the classical viewpoint needs backtracks, the alternative seems to be able to resolve everything using only shallow backtracks or none at all.
 Of course the channeled version then also doesn't require backtracking.
-This could mean that the constraints are stronger in the alternate viewpoint (and thus also with channeling), meaning that only the correct numbers are found for each cell.
-But, it seems that this stronger propagation actually uses more time than just backtracking occasionally.
+This could mean that the constraints are stronger in the alternate viewpoint (and thus also with channeling), meaning that any incorrect number can be ruled out using only propagation.
+But, it seems that this stronger propagation actually uses more time compared to just doing some backtracking.
 
 With _ECLiPSE_, there are a lot of search parameters that you can choose from.
 The following are the possible variable selection strategies:
@@ -289,16 +290,12 @@ Besides selection strategies, there are also the following choice methods that w
 * _indomain random_: Values are selected from the domain at random and failed values are removed.
 * _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
 
-There are also the reverse methods of above functions.
-We did not test those as we assumed similar averaged results or results that are strongly dependent per puzzle.
-
 To test which strategy gives us the best result, we decided to run them all on our primary implementation.
 To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. occurence) strategies and visa versa.
 
 First we started by running all the variable selection strategies (all results are in included in extra 'txt' files in the results folder).
 In figure \ref{variable_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
 Option Smallest and Largest are not in this list because of their disproportional amount of backtracks (average: 1590133,33 backtracks).
-We choose to visualize the backtracks because they are usually strongly correlated to the running time.
 
 ![Sudoku variable selection comparison. Note: we cut off max_regret at extra2 (original value 28716) \label{variable_selection_comparison}](images/sudoku_variable_selection_comparison.png "Sudoku variable selection comparison")
 

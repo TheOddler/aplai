@@ -438,10 +438,15 @@ p(5,5) | 350,956           | 25996             | 0,187          | 1
 p(6,1) | 177,872           | 4330              | 0,297          | 0
 Table: The last 6 results of Shikaku _ECLiPSe_ with the normal and the alternate viewpoint
 
-We can see that the alternative view is much faster than the other methods. We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model.
+We can see that the alternative view is much faster than the other methods.
+We can also see that it contains much less backtracks, which makes it seem that the constraints are tighter in the alternative model.
 This is what we believe to be the main reason for the difference in speed.
 
-Another reason for their difference in the search tree is that there are simply different values to be found.
+These results show the time when using the additional redundant constraint.
+When not using this constraint there is no significant difference for the smaller problems (those that are solved in less than a second or just a few seconds).
+For the bigger problems, those taking more than 100 seconds to solve, we do see that the redundant constraint gives some improvement.
+For problems p(5, 2), p(5, 3), p(5, 5) and p(6, 1) there is an improvement of 3.62, 14.03, 36.21 and 21.47 seconds respectively.
+There was however no difference in the number of backtracks, indicating that the extra constraint only manages to speed up shallow backtracks.
 
 In the Sudoku implementation, we also discussed a difference in search heuristics.
 One of the results that seemed odd to us is the fact that the performance of the regular indomain was among the best.

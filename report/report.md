@@ -133,6 +133,7 @@ Eclipse has a very nice array syntax, so this was quite easy:
 	).
 
 Similarly we extract each block and add the `alldifferent` constaint.
+The `alldifferent` constraint from the `ic` library is an active constraint and the only one we use.
 All that's left then is starting the search.
 
 ### Alternative view
@@ -389,6 +390,7 @@ As with Sudoku, _ECLiPSe_ lend itself very well to this problem.
 We represented each rectangle as a X and Y coordinate for the upper left corner, and a Width and Height variable.
 Since each hint will give rise to exactly one rectangle, we simply iterated over the given hints, and create a single rectangle for each.
 Then it simply came down to defining the constraints which are all quite straightforward.
+Again we extensively use the `ic` library thus all our constraints are active constraints.
 
 The grid is simply assumed to start at coordinate 1,1 and end in Width,Height.
 Other than the constraints on the rectangles there is no real representation of the grid.
@@ -526,11 +528,6 @@ TODO TODO TODO
 Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tekst):
 
 3.3.1:
-
-* Active/passive: Van ons zijn active want wij gebruiken de ic library en niet suspend library (en mss ook omdat we "seach/6" maar kzen niet zeker of dat echt verschil maakt daarin, labering zou ook ok zijn denkik misschien mogelijk eventueel). Ma kweet niet goed hoe da te beschrijven in de tekst dan :P
-	* Passive constraints zijn constraints die enkel gebruikt worden om te testen of een huidige toepassing van variabelen correct is
-	* Active constraints geven ook aanleiding tot propagation, dus door het aanpassen van één variabele worden die cosntraints gepropagate naar andere
-	* Wij hebben active constraints allemaal denkik, omdat we de ic library gebruiken die dit toe laat voor zover ik het begrijp :P --> wij gebruiken zo "#=" enal (met die #) die doen da precies :P
 
 * Tests zonder en met extra redundant constraint en bespreek verschil (niet zo veel in eclipse zekers? :P) Voor zowel eclipse als CHR (CHR merkte da meer zekers? Daar is minder fancy propagation)
 

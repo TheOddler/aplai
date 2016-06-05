@@ -9,6 +9,8 @@ There is also a file `print_shikaku.pl` that was supplied on toledo to get a nic
 
 e.g. the file `sudoku_chr_channel.pl` contains the CHR implementation of Sudoku using channeling.
 
+Note that the Eclipse channeling for Sudoku imports both other implementations and thus some warnings will be shown because "solve" and "solve_all" are overwritten. Don't worry about this, it's normal.
+
 ## ECLiPSe
 Open the tkeclipse interface and load the file you wish to run.
 It is important that you run the file in the same folder as the other files, as it will automatically include the file with the puzzles.
@@ -21,4 +23,4 @@ You can also solve a specific puzzle by using `solve/2` using the puzzle name an
 ## CHR
 Open SWI-Prolog and load the file you wish to run.
 It is important that you run the file in the same folder as the other files, as it will automatically include the file with the puzzles.
-There are similar commands available as in ECLiPSe to run the puzzle you wish.
+The same commands are available as in ECLiPSe to run the puzzle(s) you wish.

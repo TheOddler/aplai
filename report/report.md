@@ -19,11 +19,11 @@ Finally we will end with a conclusion regarding the assignment as a whole.
 
 # Constraint Programming languages
 
-## ECLiPSE
+## ECLiPSe
 
 _ECLiPSe_ is an Open-Source, Prolog-based system for the development and deployment of Constraint Programming applications.
 It is largely backwards compatible with Prolog, which means that a large set of the Prolog libraries are still be available.
-It also includes its own development environment _TkEclipse_, which includes some tools for debugging.
+It also includes its own development environment _TkECLiPSe_, which includes some tools for debugging.
 It also has a fairly active community, which means that questions asked on popular forums (e.g. StackOverflow) will get answered within a reasonable amount of time.
 
 _ECLiPSe_ extends Prolog by providing a core language for specifying constraints and relations between variables.
@@ -31,9 +31,9 @@ It also introducing new data types and structures such as arrays and for-loops, 
 It is declarative, easy to understand and it has a built-in search mechanism that supports many different parameters.
 The running time, however, is highly dependent on the selected parameters (which define the heuristics used during the search).
 Because of its slight differences with Prolog and the way it handles lists, it can be confusing for programmers that are new to the language.
-Debugging can be a troublesome, as with any declarative language as there isn't always a clear path trough the code, however the _TkEclipse_ debugging tools relieve this problem a bit.
+Debugging can be a troublesome, as with any declarative language as there isn't always a clear path through the code, however the _TkECLiPSe_ debugging tools relieve this problem a bit.
 
-_ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkeclipse.
+_ECLiPSe_ can be run using a more traditional command-line interface or a more interactive Graphical User Interface (GUI) tkECLiPSe.
 But don't let the looks deceive you, the GUI works fairly well.
 
 ## CHR
@@ -49,32 +49,34 @@ Unfortunately, most of them refer to exactly the same examples.
 
 ## Jess
 
-Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier. It is free for academic use, but a license is needed for commercial use. And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
+Jess is a rule engine for the Java platform. It has a GUI based on the open-source Eclipse IDE, which -in combination with friendly user-friendly error messages, should make the development easier.
+It is free for academic use, but a license is needed for commercial use.
+And it uses its own declarative XML language (JessML) which offers a lot of the Java perks, such as regular expressions and Java object manipulation.
 
 However, the minor amount of available documentation, the trouble to get a working installation, the fact that it had not yet been introduced to us at the time of coding and the fact that it uses yet another language (JessML) instead of the already known Prolog syntax made Jess a less practical choice.
 Besides these practicalities, we found that both Jess and CHR are good for expressing rules, but have a lesser support for search compared to _ECLiPSe_. We found that this is even worse for Jess, where delegating to host language (Java) is a common implementation.
 
 ## Which did we choose?
 
-For this assignment we chose **ECLiPSE** and **CHR** to make our solvers in.
-The main reasons for this are that ECLiPSE and CHR seem to have a superior amount of documentation and a more active community.
+For this assignment we chose **ECLiPSe** and **CHR** to make our solvers in.
+The main reasons for this are that ECLiPSe and CHR seem to have a superior amount of documentation and a more active community.
 
-The course was mainly focused on **ECLiPSE** so this was an easy choice, as this allowed us to start working on the assignment much sooner.
-Both **ECLiPSE** and **CHR** are also implemented on Prolog, which also makes working in both languages simultaneously much more enjoyable.
+The course was mainly focused on **ECLiPSe** so this was an easy choice, as this allowed us to start working on the assignment much sooner.
+Both **ECLiPSe** and **CHR** are also implemented on Prolog, which also makes working in both languages simultaneously much more enjoyable.
 
-When looking at the puzzles we had to solve for this assignment, Sudoku and Shikaku, **ECLiPSE** has some very useful features:
+When looking at the puzzles we had to solve for this assignment, Sudoku and Shikaku, **ECLiPSe** has some very useful features:
 
-* Both puzzles require some search, as there are no known set of constraints that can solve any puzzle, and ECLiPSE has very nice support for this with very powerful propagation support.
+* Both puzzles require some search, as there are no known set of constraints that can solve any puzzle, and ECLiPSe has very nice support for this with very powerful propagation support.
 * The build-in array syntax gave a very natural way of reasoning about the constraints and specifying them.
 * The for-loop support gave a very nice way to specify constraints on the cells
-* The `ic` libary provided some very nice constraints (e.g. alldifferent)
+* The `ic` library provided some very nice constraints (e.g. alldifferent)
 
 There are however also some drawbacks:
 
 * Some functions require grounded variables, and it is not always immediately clear which these are. ECLiPSe allows variables to have a domain, but Prolog doesn't always agree with this, which can be confusing at times.
 * The required running time of a program can vary greatly on only slight changes in the code. As there is no way, to our knowledge, to see the propagation that is happening, nor are there any profiling tools, it is very hard to optimize and debug the constraints.
 
-**CHR** is much more basic than ECLiPSE.
+**CHR** is much more basic than _ECLiPSe_.
 It requires much more to be hand-crafted.
 However since it is implemented on Prolog you do get some very nice features.
 Mainly backtracking is very useful during search, as this also backtracks the changes that happened in the  **CHR** constraint-store, allowing for a relatively easy way to implement a simple search strategy.
@@ -89,7 +91,7 @@ We didn't use **Jess** as this has the same problems as CHR, but doesn't have th
 ## TASK-DESCRIPTION
 
 Sudoku is a logic puzzle game.
-It consists of a a 9 by 9 board, divided in 3 by 3 blocks.
+It consists of a 9 by 9 board, divided in 3 by 3 blocks.
 Each cell must contain exactly one number between 1 and 9, and at the start some of these are filled in.
 Each column, row and block must contain all different numbers, so it's up to the player to find a configuration that works within these constraints (without of course changing the given numbers).
 
@@ -118,17 +120,17 @@ Also between lists no coordinate may exist twice.
 
 To combine both viewpoints, we used __channeling__ by linking the board variables to both implementations.
 
-## Eclipse implementations
+## ECLiPSe implementations
 
 ### Normal view
 
-Eclipse is very well suited for these kinds of problems.
+ECLiPSe is very well suited for these kinds of problems.
 The implementation reflects this, and is quite simple.
 First we give each cell an initial domain, 1 to 9 (or 1 to N in our case).
 Then, since the puzzles are already given as a grid of numbers, all we had to do was iterate over each row, column and block and add the `alldifferent` constraint from the `ic` library.
-Eclipse has a very nice array syntax, so this was quite easy:
+ECLiPSe has a very nice array syntax, so this was quite easy:
 
-	( for(I,1,D), param(BoardArray,D) % D is the dimention of the board
+	( for(I,1,D), param(BoardArray,D) % D is the dimension of the board
 	do
 		Row is BoardArray[I,1..D],
 		Col is BoardArray[1..D,I],
@@ -136,7 +138,7 @@ Eclipse has a very nice array syntax, so this was quite easy:
 		alldifferent(Col)
 	).
 
-Similarly we extract each block and add the `alldifferent` constaint.
+Similarly we extract each block and add the `alldifferent` constraint.
 The `alldifferent` constraint from the `ic` library is an active constraint and the only one we use.
 All that's left then is starting the search.
 
@@ -242,7 +244,7 @@ We also included both search rules so it will first try either cell or rvc const
 
 ## EXPERIMENTS SET-UP
 
-To make the testing easier, we created a file "sudoku_eclipse_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
+To make the testing easier, we created a file "sudoku_ECLiPSe_channeling" where the classical viewpoint, the alternate viewpoint and a combination using channeling can be called.
 The file defines a method solve_all/0 which will loop over all the different Sudokus defined in the sudex_toledo, using default channeling method.
 You can also solve a specific puzzle by using solve/2 using the puzzle name and model ('simple', 'alt' or 'both') as arguments.
 Every time a solve method is called, the name of the method, name of the puzzle, running time, backtracks and solution is outputted.
@@ -257,9 +259,9 @@ The first thing we noticed is that our alternate viewpoint is a lot slower than 
 It was even that much slower that the 25x25 Sudoku wouldn't be solved within a reasonable amount of time.
 (Results for this puzzle are therefore missing in figure \ref{sudoku_clp_chart2})
 
-![Results of Sudoku ECLiPSE primary implementation\label{sudoku_clp_chart1}](images/sudoku_clp_chart1.png "Results of Sudoku ECLiPSE primary implementation")
+![Results of Sudoku ECLiPSe primary implementation\label{sudoku_clp_chart1}](images/sudoku_clp_chart1.png "Results of Sudoku ECLiPSe primary implementation")
 
-![Results of Sudoku ECLiPSE alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSE alternate implementation")
+![Results of Sudoku ECLiPSe alternate implementation\label{sudoku_clp_chart2}](images/sudoku_clp_chart2.png "Results of Sudoku ECLiPSe alternate implementation")
 
 Furthermore, we noticed that the channeling didn't help our primary viewpoint to gain speed.
 In fact, the primary viewpoint is faster than the channeling in all Sudokus except for Extra2.
@@ -267,7 +269,7 @@ We believe that ECLiPSe can do sufficient propagation on the primary viewpoint, 
 This leads to worse times for most puzzles, however Extra2 seems to gain a lot from this extra propagation.
 We are unsure what exactly makes Extra2 special compared to the other problems.
 
-![Comparison between ECLiPSE and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSE and Channeling")
+![Comparison between ECLiPSe and Channeling\label{sudoku_clp_chart3}](images/sudoku_clp_chart3.png "Comparison between ECLiPSe and Channeling")
 
 Where we do see an improvement is in the number of needed backtrack.
 Only the classical viewpoint needs backtracks, the alternative seems to be able to resolve everything using only shallow backtracks or none at all.
@@ -275,7 +277,7 @@ Of course the channeled version then also doesn't require backtracking.
 This could mean that the constraints are stronger in the alternate viewpoint (and thus also with channeling), meaning that any incorrect number can be ruled out using only propagation.
 But, it seems that this stronger propagation actually uses more time compared to just doing some backtracking.
 
-With _ECLiPSE_, there are a lot of search parameters that you can choose from.
+With _ECLiPSe_, there are a lot of search parameters that you can choose from.
 The following are the possible variable selection strategies:
 
 * _input order_: Variables are considered in the order that they were passed to the search predicate.
@@ -297,7 +299,7 @@ Besides selection strategies, there are also the following choice methods that w
 * _indomain split_: Values are selected by splitting the domain and trying the lower half first and failed intervals are removed entirely.
 
 To test which strategy gives us the best result, we decided to run them all on our primary implementation.
-To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. occurence) strategies and visa versa.
+To get an apples-to-apples comparison, we selected one choice method (e.g. indomain) to test all variable selection (e.g. occurrence) strategies and vice versa.
 
 First we started by running all the variable selection strategies (all results are in included in extra 'txt' files in the results folder).
 In figure \ref{variable_selection_comparison} you can see the overview of all selection options with their backtracks per Sudoku puzzle.
@@ -385,7 +387,7 @@ This viewpoint is very similar but, as we will show, can give much better result
 ## Redundant constraint
 
 As per the assignment we introduced a redundant constraint to improve the solution.
-In it's simplest form it is not needed to specify that each rectangle can only contain a single number.
+In its simplest form it is not needed to specify that each rectangle can only contain a single number.
 Since rectangles can't overlap, and each rectangle contains one of those numbers, it is implied that each rectangle contains exactly one number.
 So as an additional constraint we **explicitly** specify that each rectangle contains exactly one number, rather than implicitly through other constraints.
 
@@ -425,7 +427,7 @@ However, we still contain the `rect/3` constraint to be able to use the nice pri
 ## EXPERIMENTS SET-UP
 
 The set-up is similar as in  the Sudoku set-up, however here we didn't do channeling (as normally there wouldn't even have been two viewpoints) and the puzzles are in a different file (puzzles.pl).
-When opening the CHR or eclipse implementation in the correct GUI, the solve/1 or solve_all/0 predicates can be used to solve a specific or all puzzles respectively.
+When opening the CHR or ECLiPSe implementation in the correct GUI, the solve/1 or solve_all/0 predicates can be used to solve a specific or all puzzles respectively.
 
 ## DISCUSSION
 
@@ -460,7 +462,7 @@ In the Sudoku implementation, we also discussed a difference in search heuristic
 One of the results that seemed odd to us is the fact that the performance of the regular indomain was among the best.
 Because of this reason, we tested indomain versus indomain_split within this problem.
 And, as we expected, we can now clearly see that indomain_split gets better results with an average of 2410,21 backtracks while indomain got an average of 5544,64 backtracks.
-We think that this difference became more apparent because there is a larger backtrack set to go over in this problem compared to the sudoku problem.
+We think that this difference became more apparent because there is a larger backtrack set to go over in this problem compared to the Sudoku problem.
 
 ### _CHR_
 
@@ -506,8 +508,8 @@ This, together with our empirical results, is why we would consider it a better 
 
 While we didn't take one of the given options of the extra assignment, we did extend the given assignments:
 
-* We implemented sudoku for dynamic dimensions (NxN) instead of the regular 9x9
-* We implemented a different (and faster) viewpoint for Shikaku (as explained in the 4)
+- We implemented Sudoku for dynamic dimensions (NxN) instead of the regular 9x9
+- We implemented a different (and faster) viewpoint for Shikaku (as explained in the 4)
 
 We did this because it came naturally during the development of our solution.
 We found it a fun challenge to allow for more sizes of Sudoku, and the alternative viewpoint of Shikaku came from a desire to make a faster solution.
@@ -538,12 +540,3 @@ The implementation of Sudoku took longest, which is probably due to the lack of 
 The extra Sudoku puzzles we tested came from: http://www.planetsudoku.net
 We used JavaScript code that can be executed in the console to easily get the Sudoku in the right format.
 The JavaScript code can be found in the sudex_toledo.pl file.
-
-
-TODO TODO TODO
-
-Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tekst):
-
-3.3.1:
-
-* Tests zonder en met extra redundant constraint en bespreek verschil (niet zo veel in eclipse zekers? :P) Voor zowel eclipse als CHR (CHR merkte da meer zekers? Daar is minder fancy propagation)

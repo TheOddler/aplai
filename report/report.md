@@ -273,6 +273,7 @@ But, it seems that this stronger propagation actually uses more time compared to
 
 With _ECLiPSE_, there are a lot of search parameters that you can choose from.
 The following are the possible variable selection strategies:
+
 * _input order_: Variables are considered in the order that they were passed to the search predicate.
 * _anti first fail_: Variables with the largest domain are prioritized.
 * _first fail_ : Variables with the smallest domain are prioritized.
@@ -283,6 +284,7 @@ The following are the possible variable selection strategies:
 * _largest_: Variables with the largest elements in their domain are prioritized.
 
 Besides selection strategies, there are also the following choice methods that we tested:
+
 * _indomain_: Values are tried in order and failed values are *not* removed.
 * _indomain max_: Values are tried in decreasing order and failed values are removed.
 * _indomain middle_: Values are tried from the middle out and failed values are removed.

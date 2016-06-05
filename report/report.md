@@ -15,6 +15,8 @@ First we will do a short discussion of the CLP languages, explaining which we ch
 We then discuss of our solver for the popular puzzle game Sudoku in both chosen languages, followed by a discussion our approach for solving Shikaku.
 Finally we will end with a conclusion regarding the assignment as a whole.
 
+\newpage
+
 # Constraint Programming languages
 
 ## ECLiPSE
@@ -79,6 +81,8 @@ Mainly backtracking is very useful during search, as this also backtracks the ch
 So any rules of a puzzle are easily implemented, however once search is required CHR is harder to use.
 
 We didn't use **Jess** as this has the same problems as CHR, but doesn't have the nice features of Prolog and was only touched on very briefly at the end of the course.
+
+\newpage
 
 # SUDOKU
 
@@ -354,6 +358,8 @@ Furthermore, we saw that the combination with channeling is slower than CHR but 
 And as a finale note, we felt it was much easier to implement in _ECLiPSe_ rather than CHR.
 _ECLiPSe_ really lends itself perfectly to these kinds of puzzles, where CHR requires a lot more work.
 
+\newpage
+
 # SHIKAKU
 
 ## TASK-DESCRIPTION
@@ -494,14 +500,19 @@ The difference a different viewpoint can make really flourishes in this example,
 The second viewpoint also keeps an intuitive approach and does not really complicate the code.
 This, together with our empirical results, is why we would consider it a better viewpoint.
 
+\newpage
+
 # EXTRA
 
 While we didn't take one of the given options of the extra assignment, we did extend the given assignments:
-- We implemented sudoku for dynamic dimensions (NxN) instead of the regular 9x9
-- We implemented a different (and faster) viewpoint for Shikaku (as explained in the 4)
+
+* We implemented sudoku for dynamic dimensions (NxN) instead of the regular 9x9
+* We implemented a different (and faster) viewpoint for Shikaku (as explained in the 4)
 
 We did this because it came naturally during the development of our solution.
 We found it a fun challenge to allow for more sizes of Sudoku, and the alternative viewpoint of Shikaku came from a desire to make a faster solution.
+
+\newpage
 
 # CONCLUSION
 
@@ -516,6 +527,8 @@ We attempted to distribute the different aspects of the assignment and used peer
 We tried to keep an even distribution over the languages so both of us got a taste of working with both implementations.
 
 Overall, it was interesting to work with CLP languages and see the empirical results rather than the solely the theoretical.
+
+\newpage
 
 # APPENDIX
 

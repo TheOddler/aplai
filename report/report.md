@@ -530,7 +530,3 @@ Dingen die in de opgave stonden maar nog missen (bovenop andere TODO's in de tek
 3.3.1:
 
 * Tests zonder en met extra redundant constraint en bespreek verschil (niet zo veel in eclipse zekers? :P) Voor zowel eclipse als CHR (CHR merkte da meer zekers? Daar is minder fancy propagation)
-
-EXTRA:
-Mss ook eens in eclipse "ic_global" importeren ipv gewoon "ic", maakt shit mss nog sneller :P
-Of mss alleen: ":- import alldifferent/1 from ic_global."
